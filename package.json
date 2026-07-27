@@ -1,0 +1,61 @@
+{
+  "name": "court-cases-manager",
+  "productName": "الإدارة الإلكترونية للقضايا",
+  "version": "1.0.0",
+  "description": "نظام إدارة القضايا الإلكترونية للمستشار أحمد خليفة",
+  "main": "main.js",
+  "author": "Ahmed Khalifa",
+  "license": "UNLICENSED",
+  "private": true,
+  "scripts": {
+    "start": "electron .",
+    "dist": "electron-builder --win",
+    "release": "electron-builder --win --publish always"
+  },
+  "dependencies": {
+    "electron-updater": "^6.3.9",
+    "electron-log": "^5.2.3"
+  },
+  "devDependencies": {
+    "electron": "^31.3.0",
+    "electron-builder": "^25.1.8"
+  },
+  "build": {
+    "appId": "com.ahmedkhalifa.courtcases",
+    "productName": "الإدارة الإلكترونية للقضايا",
+    "asar": true,
+    "files": [
+      "main.js",
+      "preload.js",
+      "src/**/*",
+      "!src/**/*.map"
+    ],
+    "directories": {
+      "output": "dist",
+      "buildResources": "build"
+    },
+    "win": {
+      "target": [
+        { "target": "nsis", "arch": ["x64"] }
+      ],
+      "icon": "build/icon.ico"
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "إدارة القضايا - المستشار أحمد خليفة",
+      "artifactName": "${productName}-Setup-${version}.${ext}",
+      "deleteAppDataOnUninstall": false
+    },
+    "publish": [
+      {
+        "provider": "github",
+        "owner": "REPLACE_WITH_YOUR_GITHUB_USERNAME",
+        "repo": "REPLACE_WITH_YOUR_REPO_NAME"
+      }
+    ]
+  }
+}

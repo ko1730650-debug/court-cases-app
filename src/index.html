@@ -1,0 +1,2499 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>الإدارة الإلكترونية للقضايا للمستشار احمد خليفة</title>
+    <link rel="stylesheet" href="assets/all.min.css">
+    <script src="assets/xlsx.full.min.js"></script>
+    <script src="assets/FileSaver.min.js"></script>
+    <style>
+        /* جميع الأنماط الأصلية – محفوظة بالكامل */
+        :root {
+            --primary-blue: #1a5f7a;
+            --light-blue: #57c5b6;
+            --cream: #f5f5dc;
+            --gold: #d4af37;
+            --white: #ffffff;
+            --dark-text: #333333;
+            --light-gray: #f8f9fa;
+            --success: #28a745;
+            --warning: #ffc107;
+            --danger: #dc3545;
+            --info: #17a2b8;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background-color: var(--cream); color: var(--dark-text); line-height: 1.6; }
+        .header { background: linear-gradient(to right, var(--primary-blue), var(--light-blue)); color: white; padding: 20px 0; text-align: center; border-bottom: 5px solid var(--gold); }
+        .header h1 { font-size: 2.2rem; }
+        .main-nav { background: white; padding: 15px; display: flex; justify-content: center; flex-wrap: wrap; gap: 15px; border-bottom: 2px solid var(--light-blue); }
+        .nav-btn { padding: 12px 24px; background: var(--primary-blue); color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; display: flex; align-items: center; gap: 8px; transition: 0.3s; position: relative; }
+        .nav-btn:hover { background: var(--light-blue); transform: translateY(-2px); }
+        .nav-btn.active { background: var(--gold); color: var(--dark-text); }
+        .icon-badge { position: relative; display: inline-flex; align-items: center; gap: 3px; }
+        .icon-badge-main { font-size: 1.1em; }
+        .icon-badge-sub { font-size: 0.75em; color: var(--gold); font-weight: 700; background: rgba(255,255,255,0.3); border-radius: 50%; width: 16px; height: 16px; display: flex; align-items: center; justify-content: center; }
+        .badge { background: var(--danger); color: white; border-radius: 50%; padding: 2px 8px; margin-left: 5px; }
+        .container { max-width: 1400px; margin: 0 auto; padding: 0 20px; }
+        .section { background: white; border-radius: 10px; padding: 25px; margin-bottom: 25px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); display: none; }
+        .section.active { display: block; animation: fadeIn 0.5s; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .section-title { color: var(--primary-blue); font-size: 1.6rem; border-bottom: 2px solid var(--light-blue); padding-bottom: 10px; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; }
+        .form-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px,1fr)); gap: 20px; margin-bottom: 30px; }
+        .form-group { display: flex; flex-direction: column; }
+        .form-group label { margin-bottom: 8px; font-weight: 600; color: var(--primary-blue); }
+        .form-control { padding: 12px 15px; border: 1px solid #ddd; border-radius: 6px; font-size: 1rem; background: white; color: black; cursor: text; }
+        .form-control:focus { outline: none; border-color: var(--light-blue); box-shadow: 0 0 0 3px rgba(87,197,182,0.2); }
+        .btn { padding: 12px 24px; background: var(--primary-blue); color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; transition: 0.3s; }
+        .btn:hover { background: var(--light-blue); transform: translateY(-2px); }
+        .btn-success { background: var(--success); }
+        .btn-warning { background: var(--warning); color: var(--dark-text); }
+        .btn-danger { background: var(--danger); }
+        .btn-gold { background: var(--gold); color: var(--dark-text); }
+        .btn-group { display: flex; gap: 10px; flex-wrap: wrap; }
+        .table-container { overflow-x: auto; margin-top: 20px; }
+        table { width: 100%; border-collapse: collapse; }
+        table th { background: var(--primary-blue); color: white; padding: 15px; text-align: right; }
+        table td { padding: 12px 15px; border-bottom: 1px solid #eee; }
+        table tr:nth-child(even) { background: var(--light-gray); }
+        table tr:hover { background: rgba(87,197,182,0.1); }
+        .action-btns { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
+        .action-btn { padding: 6px 10px; border-radius: 4px; border: none; cursor: pointer; font-size: 0.9rem; display: flex; align-items: center; gap: 5px; }
+        .action-btn.view { background: var(--info); color: white; }
+        .action-btn.edit { background: var(--warning); color: var(--dark-text); }
+        .action-btn.transfer { background: var(--primary-blue); color: white; }
+        .action-btn.judgment { background: var(--success); color: white; }
+        .action-btn.cancel { background: var(--danger); color: white; }
+        .action-btn.decision { background: var(--info); color: white; }
+        .action-btn.archive { background: #6c757d; color: white; }
+        .action-btn.restore { background: #20c997; color: white; }
+        .action-btn.history { background: #6f42c1; color: white; }
+        .stats-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px,1fr)); gap: 20px; margin-bottom: 30px; }
+        .stat-card { background: white; border-radius: 10px; padding: 25px; text-align: center; border-top: 5px solid var(--primary-blue); box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+        .stat-number { font-size: 2.5rem; font-weight: 700; color: var(--light-blue); }
+        .status-badge { padding: 5px 10px; border-radius: 20px; font-size: 0.8rem; font-weight: 600; }
+        .status-active { background: rgba(40,167,69,0.2); color: var(--success); }
+        .status-judgment { background: rgba(255,193,7,0.2); color: #856404; }
+        .status-cancelled { background: rgba(220,53,69,0.2); color: var(--danger); }
+        .status-archived { background: rgba(108,117,125,0.2); color: #6c757d; }
+        .status-decision { background: rgba(23,162,184,0.2); color: var(--info); }
+        .date-input-group { display: flex; gap: 10px; align-items: center; }
+        .date-input { width: 80px; text-align: center; padding: 10px; border: 1px solid #ddd; border-radius: 4px; }
+        .roll-number-input { width: 70px; padding: 5px; border: 1px solid #ccc; border-radius: 4px; }
+        .attendance-input, .requests-input, .decision-input { width: 100%; padding: 5px; border: 1px solid #ccc; border-radius: 4px; resize: vertical; }
+        .modal { display: none; position: fixed; top: 0; right: 0; bottom: 0; left: 0; background: rgba(0,0,0,0.5); align-items: center; justify-content: center; padding: 20px; z-index: 1000; }
+        .modal.active { display: flex; }
+        .modal-content { background: white; border-radius: 10px; max-width: 800px; width: 100%; max-height: 90vh; overflow-y: auto; padding: 25px; }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--light-blue); padding-bottom: 10px; margin-bottom: 20px; }
+        .close-modal { background: none; border: none; font-size: 1.5rem; color: var(--danger); cursor: pointer; }
+        .footer { background: linear-gradient(to right, var(--primary-blue), var(--light-blue)); color: white; padding: 30px 0; text-align: center; margin-top: 40px; border-top: 5px solid var(--gold); }
+        .backup-card { background: white; padding: 25px; border-radius: 8px; text-align: center; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+        .backup-card i { font-size: 3rem; color: var(--primary-blue); margin-bottom: 15px; }
+        .bulk-transfer { background: var(--light-gray); padding: 20px; border-radius: 8px; margin-top: 20px; }
+        .case-checkbox { margin-left: 10px; }
+        @media (max-width: 768px) { .form-container, .stats-container { grid-template-columns: 1fr; } .main-nav { flex-direction: column; } .nav-btn { width: 100%; } }
+        .pdf-page { background: var(--white); border: 1px solid #ccc; box-shadow: 0 4px 20px rgba(0,0,0,0.12); padding: 40px; max-width: 950px; margin: 0 auto; min-height: 300px; }
+        @media print {
+            body.printing-prev-sessions * { visibility: hidden; }
+            body.printing-prev-sessions #prevSessionsDocument, body.printing-prev-sessions #prevSessionsDocument * { visibility: visible; }
+            body.printing-prev-sessions #prevSessionsDocument { position: absolute; top: 0; right: 0; left: 0; width: 100%; box-shadow: none; border: none; padding: 10px; }
+        }
+    </style>
+</head>
+<body>
+    <!-- ========== الهيدر المعدل ========== -->
+    <header class="header">
+        <h1>الإدارة الإلكترونية للقضايا للمستشار احمد خليفة</h1>
+        <div class="subtitle">نظام إدارة القضايا الإلكترونية لسادة المستشارين</div>
+    </header>
+
+    <nav class="main-nav">
+        <button class="nav-btn active" data-section="dashboard"><span class="icon-badge"><i class="fas fa-home icon-badge-main"></i><span class="icon-badge-sub">📊</span></span> لوحة التحكم</button>
+        <button class="nav-btn" data-section="circles"><span class="icon-badge"><i class="fas fa-building icon-badge-main"></i><span class="icon-badge-sub">⚙️</span></span> إدارة الدوائر</button>
+        <button class="nav-btn" data-section="cases"><span class="icon-badge"><i class="fas fa-gavel icon-badge-main"></i><span class="icon-badge-sub">📋</span></span> القضايا المتداولة <span class="badge" id="activeCasesCount">0</span></button>
+        <button class="nav-btn" data-section="add-case"><span class="icon-badge"><i class="fas fa-plus-circle icon-badge-main"></i><span class="icon-badge-sub">➕</span></span> إضافة دعوى جديدة</button>
+        <button class="nav-btn" data-section="create-roll"><span class="icon-badge"><i class="fas fa-file-alt icon-badge-main"></i><span class="icon-badge-sub">📄</span></span> إنشاء رول الجلسة</button>
+        <button class="nav-btn" data-section="transfer"><span class="icon-badge"><i class="fas fa-exchange-alt icon-badge-main"></i><span class="icon-badge-sub">🔄</span></span> ترحيل الدعاوى</button>
+        <button class="nav-btn" data-section="previous-sessions"><span class="icon-badge"><i class="fas fa-calendar-check icon-badge-main"></i><span class="icon-badge-sub">🗓️</span></span> عرض الجلسات السابقة</button>
+        <button class="nav-btn" data-section="files"><span class="icon-badge"><i class="fas fa-folder-open icon-badge-main"></i><span class="icon-badge-sub">📁</span></span> إدارة الملفات</button>
+        <button class="nav-btn" data-section="judgment"><span class="icon-badge"><i class="fas fa-balance-scale icon-badge-main"></i><span class="icon-badge-sub">⚖️</span></span> محجوزة للحكم <span class="badge" id="judgmentCasesCount">0</span></button>
+        <button class="nav-btn" data-section="decision"><span class="icon-badge"><i class="fas fa-file-contract icon-badge-main"></i><span class="icon-badge-sub">✍️</span></span> محجوزة للقرار <span class="badge" id="decisionCasesCount">0</span></button>
+        <button class="nav-btn" data-section="cancelled"><span class="icon-badge"><i class="fas fa-ban icon-badge-main"></i><span class="icon-badge-sub">❌</span></span> الدعاوى المشطوبة <span class="badge" id="cancelledCasesCount">0</span></button>
+        <button class="nav-btn" data-section="archive"><span class="icon-badge"><i class="fas fa-archive icon-badge-main"></i><span class="icon-badge-sub">🗂️</span></span> الأرشيف</button>
+        <button class="nav-btn" data-section="search"><span class="icon-badge"><i class="fas fa-search icon-badge-main"></i><span class="icon-badge-sub">🔍</span></span> بحث متقدم</button>
+        <button class="nav-btn" data-section="backup"><span class="icon-badge"><i class="fas fa-database icon-badge-main"></i><span class="icon-badge-sub">💾</span></span> النسخ الاحتياطي</button>
+    </nav>
+
+    <div class="container">
+        <!-- ========== لوحة التحكم ========== -->
+        <section id="dashboard" class="section active">
+            <h2 class="section-title"><i class="fas fa-tachometer-alt"></i>لوحة التحكم</h2>
+            <div class="alert alert-info"><i class="fas fa-info-circle"></i> مرحباً، اليوم: <span id="currentDate"></span></div>
+            <div class="stats-container" id="dashboardStats"></div>
+            <div id="upcomingSessionsAlert"></div>
+            <h3 class="section-title"><i class="fas fa-history"></i>آخر الدعاوى المضافة</h3>
+            <div class="table-container"><table id="recentCasesTable"><thead><tr><th>رقم الدعوى</th><th>رقم المتداول</th><th>المدعي</th><th>الدائرة</th><th>تاريخ الجلسة</th><th>الحالة</th></tr></thead><tbody></tbody></table></div>
+            <div class="export-section">
+                <h3><i class="fas fa-file-word"></i>تصدير جميع الدعاوى</h3>
+                <div class="btn-group">
+                    <button class="btn btn-success" onclick="exportAllCasesToWord()"><i class="fas fa-file-word"></i> Word</button>
+                    <button class="btn btn-info" onclick="exportAllCasesToExcel()"><i class="fas fa-file-excel"></i> Excel</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========== إدارة الدوائر ========== -->
+        <section id="circles" class="section">
+            <h2 class="section-title"><i class="fas fa-building"></i>إدارة الدوائر</h2>
+            <div class="form-container">
+                <div class="form-group"><label>رقم الدائرة</label><input type="number" id="circleNumber" class="form-control" min="1"></div>
+                <div class="form-group"><label>اسم الدائرة</label><input type="text" id="circleName" class="form-control"></div>
+                <div class="form-group"><label>يوم الانعقاد</label>
+                    <select id="circleDay" class="form-control">
+                        <option value="">اختر</option><option>السبت</option><option>الأحد</option><option>الاثنين</option><option>الثلاثاء</option><option>الأربعاء</option><option>الخميس</option><option>الجمعة</option>
+                    </select>
+                </div>
+            </div>
+            <div class="btn-group">
+                <button class="btn btn-success" id="addCircleBtn"><i class="fas fa-plus"></i>إضافة دائرة</button>
+                <button class="btn" id="resetCircleFormBtn"><i class="fas fa-redo"></i>تفريغ</button>
+            </div>
+            <h3 class="section-title" style="margin-top:30px;">الدوائر المسجلة</h3>
+            <div class="table-container">
+                <table id="circlesTable">
+                    <thead><tr><th>رقم الدائرة</th><th>اسم الدائرة</th><th>يوم الانعقاد</th><th>الدعاوى المتداولة</th><th>الإجراءات</th></tr></thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- ========== إضافة دعوى جديدة ========== -->
+        <section id="add-case" class="section">
+            <h2 class="section-title"><i class="fas fa-plus-circle"></i>إضافة دعوى جديدة</h2>
+            <div class="alert alert-warning" id="duplicateAlert" style="display:none;"><i class="fas fa-exclamation-triangle"></i> بيانات مكررة</div>
+            <div class="form-container">
+                <div class="form-group"><label>الدائرة *</label><select id="caseCircle" class="form-control" required><option value="">اختر</option></select></div>
+                <div class="form-group"><label>رقم الدعوى *</label><input type="text" id="caseNumber" class="form-control" required autocomplete="off"></div>
+                <div class="form-group"><label>رقم المتداول *</label><input type="text" id="caseProceedingNumber" class="form-control" required autocomplete="off"></div>
+                <div class="form-group"><label>اسم المدعي *</label><input type="text" id="casePlaintiff" class="form-control" required autocomplete="off"></div>
+                <div class="form-group"><label>اسم المدعى عليه *</label><input type="text" id="caseDefendant" class="form-control" required autocomplete="off"></div>
+                <div class="form-group"><label>موضوع الدعوى *</label><textarea id="caseSubject" class="form-control" rows="3" required autocomplete="off"></textarea></div>
+                <div class="form-group">
+                    <label>تاريخ الجلسة القادمة *</label>
+                    <div class="date-input-group">
+                        <input type="number" id="caseSessionDay" class="date-input" min="1" max="31" placeholder="يوم" required>
+                        <span>/</span>
+                        <input type="number" id="caseSessionMonth" class="date-input" min="1" max="12" placeholder="شهر" required>
+                        <span>/</span>
+                        <input type="number" id="caseSessionYear" class="date-input" min="2024" max="2100" placeholder="سنة" required>
+                    </div>
+                </div>
+            </div>
+            <div class="btn-group">
+                <button class="btn btn-success" id="addCaseBtn"><i class="fas fa-save"></i>حفظ الدعوى</button>
+                <button class="btn" id="resetCaseFormBtn"><i class="fas fa-redo"></i>تفريغ</button>
+            </div>
+        </section>
+
+        <!-- ========== رمز الأيقونات (دليل) ========== -->
+        <section id="icon-legend" class="section">
+            <h2 class="section-title"><i class="fas fa-icons"></i>رموز الأيقونات</h2>
+            <div class="icon-legend-grid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:15px;">
+                <div class="icon-item"><i class="fas fa-home"></i> لوحة التحكم</div>
+                <div class="icon-item"><i class="fas fa-building"></i> إدارة الدوائر</div>
+                <div class="icon-item"><i class="fas fa-gavel"></i> القضايا المتداولة</div>
+                <div class="icon-item"><i class="fas fa-plus-circle"></i> إضافة دعوى جديدة</div>
+                <div class="icon-item"><i class="fas fa-file-alt"></i> إنشاء رول الجلسة</div>
+                <div class="icon-item"><i class="fas fa-exchange-alt"></i> ترحيل الدعاوى</div>
+                <div class="icon-item"><i class="fas fa-balance-scale"></i> محجوزة للحكم</div>
+                <div class="icon-item"><i class="fas fa-file-contract"></i> محجوزة للقرار</div>
+                <div class="icon-item"><i class="fas fa-ban"></i> الدعاوى المشطوبة</div>
+                <div class="icon-item"><i class="fas fa-archive"></i> الأرشيف</div>
+                <div class="icon-item"><i class="fas fa-search"></i> بحث متقدم</div>
+                <div class="icon-item"><i class="fas fa-database"></i> النسخ الاحتياطي</div>
+                <div class="icon-item"><i class="fas fa-folder-open"></i> إدارة الملفات</div>
+            </div>
+        </section>
+
+        <section id="files" class="section">
+            <h2 class="section-title"><i class="fas fa-folder-open"></i>إدارة ملفات القضايا</h2>
+            <p>يتم تفعيل ميزة الملفات من داخل قائمة الدعاوى المتداولة. اضغط زر <strong>📁 ملفات</strong> بجانب كل دعوى لتحميل الملفات أو فتح المجلد الخاص بها.</p>
+            <p>توفر الميزة حفظ المستندات في مجلد خاص بكل دعوى وفتح الملفات مباشرة من التطبيق.</p>
+            <div class="btn-group" style="margin-top:20px;">
+                <button class="btn btn-success" onclick="showAlert('انتقل إلى قائمة القضايا لاستخدام ميزة الملفات','info')"><i class="fas fa-info-circle"></i> كيفية الاستخدام</button>
+            </div>
+        </section>
+
+        <!-- ========== إنشاء رول الجلسة ========== -->
+        <section id="create-roll" class="section">
+            <h2 class="section-title"><i class="fas fa-file-alt"></i>إنشاء رول الجلسة</h2>
+            <div class="roll-container" style="background: var(--light-gray); padding: 20px; border-radius: 8px; margin-bottom: 20px;">
+                <div class="form-container">
+                    <div class="form-group">
+                        <label>تاريخ الجلسة (يوم/شهر/سنة)</label>
+                        <div class="date-input-group">
+                            <input type="number" id="rollSessionDay" class="date-input" min="1" max="31" placeholder="يوم">
+                            <span>/</span>
+                            <input type="number" id="rollSessionMonth" class="date-input" min="1" max="12" placeholder="شهر">
+                            <span>/</span>
+                            <input type="number" id="rollSessionYear" class="date-input" min="2024" max="2100" placeholder="سنة">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>الدائرة (اختياري)</label>
+                        <select id="rollCircle" class="form-control"><option value="">جميع الدوائر</option></select>
+                    </div>
+                </div>
+                <button class="btn btn-gold" id="loadCasesForRollBtn"><i class="fas fa-search"></i>عرض الدعاوى</button>
+            </div>
+            <div id="rollCasesContainer" style="display: none;">
+                <h3 class="section-title">الدعاوى في الجلسة</h3>
+                <div class="roll-settings" style="background: var(--light-gray); padding: 15px; border-radius: 8px; margin-bottom: 15px;">
+                    <h4>تنسيق الرول:</h4>
+                    <div class="roll-header-fields" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px,1fr)); gap: 15px;">
+                        <div class="form-group"><label>عنوان الرول</label><input type="text" id="rollTitle" class="form-control" value="رول جلسة قضايا هيئة قضايا الدولة"></div>
+                        <div class="form-group"><label>تاريخ الرول</label><input type="text" id="rollDate" class="form-control" readonly></div>
+                        <div class="form-group"><label>اسم الدائرة</label><input type="text" id="rollCircleName" class="form-control" readonly></div>
+                    </div>
+                </div>
+                <div class="table-container">
+                    <table id="rollCasesTable">
+                        <thead>
+                            <tr>
+                                <th width="50">الترتيب</th>
+                                <th width="80">رقم الرول</th>
+                                <th width="100">رقم الدعوى</th>
+                                <th width="100">رقم المتداول</th>
+                                <th>اسم المدعي</th>
+                                <th>اسم المدعى عليه</th>
+                                <th>موضوع الدعوى</th>
+                                <th width="150">حضور الخصوم</th>
+                                <th width="150">طلبات الدولة</th>
+                                <th width="150">قرار المحكمة</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+                <div class="roll-actions" style="display: flex; gap: 15px; margin-top: 20px; flex-wrap: wrap;">
+                    <button class="btn btn-success" id="arrangeRollBtn"><i class="fas fa-sort-numeric-up"></i>ترتيب الرول حسب الأرقام</button>
+                    <button class="btn btn-gold" id="printRollBtn"><i class="fas fa-print"></i>طباعة الرول</button>
+                    <button class="btn btn-info" id="exportRollWordBtn"><i class="fas fa-file-word"></i>تصدير إلى Word</button>
+                    <button class="btn btn-success" id="exportRollExcelBtn"><i class="fas fa-file-excel"></i>تصدير إلى Excel</button>
+                    <button class="btn btn-success" id="exportWhatsAppBtn"><i class="fab fa-whatsapp"></i>تصدير إلى واتساب</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========== ترحيل الدعاوى ========== -->
+        <section id="transfer" class="section">
+            <h2 class="section-title"><i class="fas fa-exchange-alt"></i>ترحيل الدعاوى</h2>
+            <div class="alert alert-info">ترحيل فردي أو مجمع</div>
+            <div class="form-container">
+                <div class="form-group">
+                    <label>تاريخ الجلسة</label>
+                    <div class="date-input-group">
+                        <input type="number" id="transferFilterDay" class="date-input" min="1" max="31" placeholder="يوم">
+                        <span>/</span>
+                        <input type="number" id="transferFilterMonth" class="date-input" min="1" max="12" placeholder="شهر">
+                        <span>/</span>
+                        <input type="number" id="transferFilterYear" class="date-input" min="2024" max="2100" placeholder="سنة">
+                    </div>
+                </div>
+                <div class="form-group"><label>الدائرة</label><select id="transferFilterCircle" class="form-control"><option value="">جميع الدوائر</option></select></div>
+            </div>
+            <button class="btn" id="loadCasesForTransferBtn"><i class="fas fa-search"></i>عرض</button>
+            <div id="transferCasesContainer" style="display:none; margin-top:30px;"></div>
+        </section>
+
+        <!-- ========== عرض الجلسات السابقة ========== -->
+        <section id="previous-sessions" class="section">
+            <h2 class="section-title"><i class="fas fa-calendar-check"></i>عرض الجلسات السابقة</h2>
+            <div class="alert alert-info"><i class="fas fa-info-circle"></i> اختر الدائرة أولاً، ثم اختر عرض كل الجلسات السابقة أو تحديد تاريخ جلسة بعينها لعرضها كملف إلكتروني.</div>
+            <div class="form-container">
+                <div class="form-group"><label>اختر الدائرة *</label><select id="prevSessionsCircle" class="form-control"><option value="">اختر الدائرة</option></select></div>
+            </div>
+            <div class="btn-group">
+                <button class="btn" id="prevSessionsSelectCircleBtn"><i class="fas fa-check-circle"></i> متابعة</button>
+            </div>
+
+            <div id="prevSessionsModeContainer" style="display:none; margin-top:30px;">
+                <h3 class="section-title" style="font-size:1.2rem;"><i class="fas fa-list-ul"></i>اختر طريقة العرض</h3>
+                <div class="btn-group">
+                    <button class="btn btn-gold" id="prevSessionsAllBtn"><i class="fas fa-layer-group"></i> عرض كل الجلسات السابقة</button>
+                    <button class="btn btn-info" id="prevSessionsPickDateBtn"><i class="fas fa-calendar-day"></i> تحديد تاريخ جلسة محددة</button>
+                </div>
+                <div id="prevSessionsDatePicker" style="display:none; margin-top:15px;">
+                    <div class="date-input-group">
+                        <input type="number" id="prevSessionsDay" class="date-input" min="1" max="31" placeholder="يوم">
+                        <span>/</span>
+                        <input type="number" id="prevSessionsMonth" class="date-input" min="1" max="12" placeholder="شهر">
+                        <span>/</span>
+                        <input type="number" id="prevSessionsYear" class="date-input" min="2024" max="2100" placeholder="سنة">
+                        <button class="btn" id="prevSessionsShowDateBtn"><i class="fas fa-search"></i> عرض</button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="prevSessionsDocumentWrapper" style="display:none; margin-top:30px;">
+                <div class="btn-group" style="margin-bottom:15px;">
+                    <button class="btn btn-success" id="printPrevSessionsBtn"><i class="fas fa-print"></i> طباعة / حفظ PDF</button>
+                    <button class="btn btn-info" id="exportPrevSessionsWordBtn"><i class="fas fa-file-word"></i> تصدير Word</button>
+                    <button class="btn" id="backToPrevSessionsSelectionBtn"><i class="fas fa-arrow-right"></i> رجوع للاختيار</button>
+                </div>
+                <div id="prevSessionsDocument" class="pdf-page"></div>
+            </div>
+        </section>
+
+        <!-- ========== القضايا المتداولة ========== -->
+        <section id="cases" class="section">
+            <h2 class="section-title"><i class="fas fa-gavel"></i>القضايا المتداولة</h2>
+            <div class="btn-group" style="margin-bottom:20px;">
+                <button class="btn btn-success" onclick="exportActiveCasesToWord()"><i class="fas fa-file-word"></i> تصدير إلى Word</button>
+            </div>
+            <div id="activeCasesContainer"></div>
+        </section>
+
+        <!-- ========== محجوزة للحكم ========== -->
+        <section id="judgment" class="section">
+            <h2 class="section-title"><i class="fas fa-balance-scale"></i>الدعاوى المحجوزة للحكم</h2>
+            <div class="btn-group" style="margin-bottom:20px;">
+                <button class="btn btn-success" onclick="exportJudgmentCasesToWord()"><i class="fas fa-file-word"></i> تصدير إلى Word</button>
+            </div>
+            <div id="judgmentCasesContainer"></div>
+        </section>
+
+        <!-- ========== محجوزة للقرار ========== -->
+        <section id="decision" class="section">
+            <h2 class="section-title"><i class="fas fa-file-contract"></i>الدعاوى المحجوزة للقرار</h2>
+            <div class="btn-group" style="margin-bottom:20px;">
+                <button class="btn btn-success" onclick="exportDecisionCasesToWord()"><i class="fas fa-file-word"></i> تصدير إلى Word</button>
+            </div>
+            <div id="decisionCasesContainer"></div>
+        </section>
+
+        <!-- ========== الدعاوى المشطوبة ========== -->
+        <section id="cancelled" class="section">
+            <h2 class="section-title"><i class="fas fa-ban"></i>الدعاوى المشطوبة</h2>
+            <div class="btn-group" style="margin-bottom:20px;">
+                <button class="btn btn-success" onclick="exportCancelledCasesToWord()"><i class="fas fa-file-word"></i> تصدير إلى Word</button>
+            </div>
+            <div id="oldCancelledCasesAlert"></div>
+            <div id="cancelledCasesContainer"></div>
+        </section>
+
+        <!-- ========== الأرشيف ========== -->
+        <section id="archive" class="section">
+            <h2 class="section-title"><i class="fas fa-archive"></i>الأرشيف</h2>
+            <div class="btn-group" style="margin-bottom:20px;">
+                <button class="btn btn-success" onclick="exportArchivedCasesToWord()"><i class="fas fa-file-word"></i> تصدير إلى Word</button>
+            </div>
+            <div id="archiveContainer"></div>
+        </section>
+
+        <!-- ========== بحث متقدم ========== -->
+        <section id="search" class="section">
+            <h2 class="section-title"><i class="fas fa-search"></i>بحث متقدم</h2>
+            <div class="search-container" style="display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); gap:15px; background:var(--light-gray); padding:20px; border-radius:8px;">
+                <div class="form-group"><label>رقم الدعوى</label><input type="text" id="searchCaseNumber" class="form-control"></div>
+                <div class="form-group"><label>رقم المتداول</label><input type="text" id="searchProceedingNumber" class="form-control"></div>
+                <div class="form-group"><label>اسم المدعي</label><input type="text" id="searchPlaintiff" class="form-control"></div>
+                <div class="form-group"><label>اسم المدعى عليه</label><input type="text" id="searchDefendant" class="form-control"></div>
+                <div class="form-group"><label>الدائرة</label><select id="searchCircle" class="form-control"><option value="">الكل</option></select></div>
+                <div class="form-group"><label>الحالة</label><select id="searchStatus" class="form-control"><option value="">الكل</option><option value="active">متداولة</option><option value="judgment">محجوزة للحكم</option><option value="decision">محجوزة للقرار</option><option value="cancelled">مشطوبة</option><option value="archived">مؤرشفة</option></select></div>
+                <div class="form-group"><label>تاريخ الجلسة</label><div class="date-input-group"><input type="number" id="searchSessionDay" class="date-input" min="1" max="31" placeholder="يوم"><span>/</span><input type="number" id="searchSessionMonth" class="date-input" min="1" max="12" placeholder="شهر"><span>/</span><input type="number" id="searchSessionYear" class="date-input" min="2024" max="2100" placeholder="سنة"></div></div>
+                <div class="form-group"><label>تاريخ الحكم</label><div class="date-input-group"><input type="number" id="searchJudgmentDay" class="date-input" min="1" max="31" placeholder="يوم"><span>/</span><input type="number" id="searchJudgmentMonth" class="date-input" min="1" max="12" placeholder="شهر"><span>/</span><input type="number" id="searchJudgmentYear" class="date-input" min="2024" max="2100" placeholder="سنة"></div></div>
+                <div class="form-group" style="grid-column: span 2;">
+                    <label>الفترة الزمنية الشاملة (تداول، شطب، حكم)</label>
+                    <div style="display:flex; gap:20px; flex-wrap:wrap;">
+                        <span>من: <input type="number" id="searchFromDay" class="date-input" min="1" max="31" placeholder="يوم"> / <input type="number" id="searchFromMonth" class="date-input" min="1" max="12" placeholder="شهر"> / <input type="number" id="searchFromYear" class="date-input" min="2024" max="2100" placeholder="سنة"></span>
+                        <span>إلى: <input type="number" id="searchToDay" class="date-input" min="1" max="31" placeholder="يوم"> / <input type="number" id="searchToMonth" class="date-input" min="1" max="12" placeholder="شهر"> / <input type="number" id="searchToYear" class="date-input" min="2024" max="2100" placeholder="سنة"></span>
+                    </div>
+                    <small style="color:#666;">الدعاوى المتداولة، المشطوبة، أو الصادر بها حكم خلال الفترة</small>
+                </div>
+            </div>
+            <div class="btn-group">
+                <button class="btn" id="searchBtn"><i class="fas fa-search"></i>بحث</button>
+                <button class="btn" id="resetSearchBtn"><i class="fas fa-redo"></i>تفريغ</button>
+                <button class="btn btn-success" id="exportSearchResultsBtn"><i class="fas fa-file-word"></i>تصدير النتائج</button>
+            </div>
+            <div id="searchResultsContainer" style="margin-top:30px;"></div>
+        </section>
+
+        <!-- ========== النسخ الاحتياطي ========== -->
+        <section id="backup" class="section">
+            <h2 class="section-title"><i class="fas fa-database"></i>النسخ الاحتياطي</h2>
+            <div class="backup-container">
+                <div class="backup-options" style="display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:20px;">
+                    <div class="backup-card"><i class="fas fa-file-export"></i><h3>إنشاء نسخة</h3><button class="btn btn-success" id="createBackupBtn"><i class="fas fa-download"></i> إنشاء</button></div>
+                    <div class="backup-card"><i class="fas fa-file-import"></i><h3>استعادة نسخة</h3><p style="color:#444; margin-top:10px;">اختر ملف النسخة الاحتياطية بصيغة JSON ثم اضغط استعادة.</p><button class="btn btn-info" id="selectRestoreFileBtn"><i class="fas fa-file-upload"></i> اختيار الملف</button><div id="selectedFileName" style="margin-top:10px;color:#333;"></div><button class="btn btn-success" id="restoreBackupBtn" style="display:none; margin-top:10px;"><i class="fas fa-undo"></i> استعادة النسخة</button><input type="file" id="restoreFileInput" accept=".json" style="display:none;"></div>
+                    <div class="backup-card"><i class="fas fa-trash-alt"></i><h3>حذف كل البيانات</h3><p style="color:#444; margin-top:10px;">سيؤدي هذا إلى حذف جميع البيانات المحفوظة نهائياً. سيتم مطالبتك بتأكيد قبل الحذف.</p><button class="btn btn-danger" id="deleteAllDataBtn"><i class="fas fa-trash"></i> حذف الكل</button></div>
+                </div>
+                <div style="margin-top:30px; background:#f8f9fa; padding:20px; border-radius:8px;"><h3><i class="fas fa-info-circle"></i> معلومات النسخ الاحتياطي</h3><div id="backupInfo"></div></div>
+            </div>
+        </section>
+    </div>
+
+    <!-- ========== الفوتر المعدل ========== -->
+    <footer class="footer">
+        <div class="developer">مطور التطبيق / المستشار أحمد خليفه عبد البديع ت/01146418693 أحد رواد العدالة الرقمية</div>
+        <div class="copyright">جميع الحقوق محفوظة للمطور 2026 - هيئة قضايا الدولة</div>
+    </footer>
+
+    <!-- مودالات النظام -->
+    <div id="caseDetailsModal" class="modal"><div class="modal-content"><div class="modal-header"><h3 class="modal-title">تفاصيل الدعوى</h3><button class="close-modal">&times;</button></div><div id="caseDetailsContent"></div></div></div>
+    <div id="transferModal" class="modal"><div class="modal-content"><div class="modal-header"><h3 class="modal-title">ترحيل الدعوى</h3><button class="close-modal">&times;</button></div><div id="transferModalContent"></div></div></div>
+    <div id="confirmModal" class="modal"><div class="modal-content" style="max-width:500px;"><div class="modal-header"><h3 class="modal-title" id="confirmModalTitle">تأكيد الإجراء</h3><button class="close-modal">&times;</button></div><div id="confirmModalContent" style="padding:20px;"></div><div class="btn-group" style="justify-content:center; padding:20px;"><button class="btn btn-danger" id="confirmActionBtn">تأكيد</button><button class="btn" id="cancelActionBtn">إلغاء</button></div></div></div>
+    <div id="historyModal" class="modal"><div class="modal-content" style="max-width:800px;"><div class="modal-header"><h3 class="modal-title">الإجراءات التاريخية</h3><button class="close-modal">&times;</button></div><div id="historyModalContent"></div></div></div>
+    <div id="restoreModal" class="modal"><div class="modal-content" style="max-width:500px;"><div class="modal-header"><h3 class="modal-title">استعادة مع تحديد تاريخ الجلسة</h3><button class="close-modal">&times;</button></div><div id="restoreModalContent"><div class="form-group"><label>تاريخ الجلسة الجديدة</label><div class="date-input-group"><input type="number" id="restoreSessionDay" class="date-input" min="1" max="31" placeholder="يوم"><span>/</span><input type="number" id="restoreSessionMonth" class="date-input" min="1" max="12" placeholder="شهر"><span>/</span><input type="number" id="restoreSessionYear" class="date-input" min="2024" max="2100" placeholder="سنة"></div></div><div class="btn-group" style="margin-top:20px;"><button class="btn btn-success" id="confirmRestoreBtn">تأكيد</button><button class="btn" id="cancelRestoreBtn">إلغاء</button></div></div></div></div>
+    <div id="archiveModal" class="modal"><div class="modal-content" style="max-width:600px;"><div class="modal-header"><h3 class="modal-title">أرشفة / تعديل الأرشفة</h3><button class="close-modal">&times;</button></div><div id="archiveModalContent"><div class="form-group"><label>سبب الأرشفة</label><select id="archiveReason" class="form-control"><option value="حكم صالح">حكم صالح</option><option value="حكم ضد">حكم ضد</option><option value="حفظ لمرور المدة">حفظ لمرور المدة</option></select></div><div class="form-group"><label>منطوق الحكم (اختياري)</label><textarea id="judgmentText" class="form-control" rows="4"></textarea></div><div class="form-group"><label>الطعن / عدم الطعن</label><select id="appealStatus" class="form-control"><option value="">غير محدد</option><option value="الطعن">الطعن</option><option value="عدم الطعن">عدم الطعن</option><option value="عدم جواز الطعن">عدم جواز الطعن</option></select></div><div class="btn-group" style="margin-top:20px;"><button class="btn btn-success" id="confirmArchiveBtn">تأكيد</button><button class="btn" id="cancelArchiveBtn">إلغاء</button></div></div></div></div>
+    <div id="judgmentDateModal" class="modal"><div class="modal-content" style="max-width:500px;"><div class="modal-header"><h3 class="modal-title" id="judgmentDateModalTitle">تحديد تاريخ الجلسة</h3><button class="close-modal">&times;</button></div><div id="judgmentDateModalContent"><div class="form-group"><label>تاريخ جلسة الحكم/القرار</label><div class="date-input-group"><input type="number" id="judgmentSessionDay" class="date-input" min="1" max="31" placeholder="يوم"><span>/</span><input type="number" id="judgmentSessionMonth" class="date-input" min="1" max="12" placeholder="شهر"><span>/</span><input type="number" id="judgmentSessionYear" class="date-input" min="2024" max="2100" placeholder="سنة"></div></div><div class="btn-group" style="margin-top:20px;"><button class="btn btn-success" id="confirmJudgmentDateBtn">تأكيد</button><button class="btn" id="cancelJudgmentDateBtn">إلغاء</button></div></div></div></div>
+    <div id="caseFilesModal" class="modal"><div class="modal-content" style="max-width:600px;"><div class="modal-header"><h3 class="modal-title">إدارة ملفات الدعوى</h3><button class="close-modal">&times;</button></div><div id="caseFilesContent" style="padding:20px;"><div class="form-group"><label>اختر نوع المستند:</label><div class="btn-group" style="flex-wrap:wrap; gap:10px;"><button class="btn btn-info" onclick="uploadCaseFile('صحيفة_الدعوى')"><i class="fas fa-file-contract"></i> صحيفة الدعوى</button><button class="btn btn-info" onclick="uploadCaseFile('مستندات_الخصم')"><i class="fas fa-folder"></i> مستندات الخصم</button><button class="btn btn-info" onclick="uploadCaseFile('مستندات_الدولة')"><i class="fas fa-folder"></i> مستندات الدولة</button><button class="btn btn-info" onclick="uploadCaseFile('مذكرة_دفاع_الدولة')"><i class="fas fa-file-alt"></i> مذكرة دفاع الدولة</button><button class="btn btn-info" onclick="uploadCaseFile('الحكم_الصادر')"><i class="fas fa-balance-scale"></i> الحكم الصادر</button></div></div><div id="caseFilesListContainer" style="margin-top:20px;"></div><div class="btn-group" style="margin-top:20px;"><button class="btn btn-success" onclick="openCaseFilesFolder()"><i class="fas fa-folder-open"></i> فتح مجلد الملفات</button><button class="btn" onclick="document.getElementById('caseFilesModal').classList.remove('active')">إغلاق</button></div></div></div></div>
+
+    <script>
+        // Immediate input enabling script - runs before DOMContentLoaded
+        (function() {
+            function enableInputs() {
+                const inputs = document.querySelectorAll('input, textarea, select');
+                inputs.forEach(el => {
+                    el.disabled = false;
+                    el.style.pointerEvents = 'auto';
+                    el.style.opacity = '1';
+                    el.removeAttribute('readonly');
+                    el.removeAttribute('disabled');
+                });
+                console.log('Inputs enabled immediately');
+            }
+            
+            // Run immediately if DOM is ready
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', enableInputs);
+            } else {
+                enableInputs();
+            }
+            
+            // Also run after a short delay to catch any dynamically added elements
+            setTimeout(enableInputs, 100);
+            setTimeout(enableInputs, 500);
+        })();
+    </script>
+    <script>
+        // ==================================================================
+        //                      التطبيق المتكامل
+        // (جميع الدوال كما هي – لم يتم تغيير أي منها)
+        // ==================================================================
+        let appData = {
+            circles: [],
+            cases: [],
+            backups: [],
+            sessionRolls: []
+        };
+
+        let currentCaseForRestore = null;
+        let currentCaseForArchive = null;
+        let lastSearchResults = [];
+
+        // ------------------- دوال التاريخ -------------------
+        function parseDMYToDate(day, month, year) {
+            if (!day || !month || !year) return null;
+            return new Date(parseInt(year), parseInt(month)-1, parseInt(day), 12, 0, 0);
+        }
+        function parseDMYDate(dateStr) {
+            if (!dateStr) return null;
+            if (dateStr.includes('-')) { let p = dateStr.split('-'); return new Date(parseInt(p[0]), parseInt(p[1])-1, parseInt(p[2]), 12,0,0); }
+            if (dateStr.includes('/')) { let p = dateStr.split('/'); return new Date(parseInt(p[2]), parseInt(p[1])-1, parseInt(p[0]), 12,0,0); }
+            return new Date(dateStr);
+        }
+        function formatDateForTable(dateStr) {
+            if (!dateStr) return '';
+            let d = parseDMYDate(dateStr);
+            if (!d || isNaN(d)) return dateStr;
+            return `${d.getDate()}/${d.getMonth()+1}/${d.getFullYear()}`;
+        }
+        function isValidDate(d,m,y) {
+            d=parseInt(d); m=parseInt(m); y=parseInt(y);
+            if (isNaN(d)||isNaN(m)||isNaN(y)) return false;
+            if (d<1||d>31||m<1||m>12||y<2024||y>2100) return false;
+            let last = new Date(y, m, 0).getDate();
+            return d <= last;
+        }
+        function getCaseActionDate(c, keyword) {
+            if (!c.history) return null;
+            for (let h of c.history) if (h.action.includes(keyword)) return new Date(h.date);
+            return null;
+        }
+        function hasJudgmentArchive(c) {
+            return c.status === 'archived' && c.archiveReason && (c.archiveReason.includes('حكم') || c.archiveReason.includes('صالح') || c.archiveReason.includes('ضد'));
+        }
+        function isDateInRange(dateStr, from, to) {
+            if (!dateStr) return false;
+            let d = parseDMYDate(dateStr);
+            if (!d) return false;
+            if (from && d < from) return false;
+            if (to && d > to) return false;
+            return true;
+        }
+
+        // ------------------- حفظ وتحميل -------------------
+        async function loadData() {
+            try {
+                let saved = null;
+                if (window.api && window.api.loadData) {
+                    saved = await window.api.loadData();
+                }
+                if (!saved) {
+                    let ls = localStorage.getItem('courtCasesAppData');
+                    if (ls) saved = ls;
+                }
+                if (saved) {
+                    appData = typeof saved === 'string' ? JSON.parse(saved) : saved;
+                }
+                if (!appData.sessionRolls) appData.sessionRolls = [];
+                console.log('Data loaded successfully');
+            } catch (error) {
+                console.error('Error loading data:', error);
+                appData = { circles: [], cases: [], backups: [], sessionRolls: [] };
+            }
+            updateNavCounters();
+        }
+        function saveData() {
+            // Defer localStorage to not block UI
+            setTimeout(() => {
+                localStorage.setItem('courtCasesAppData', JSON.stringify(appData));
+            }, 0);
+            if (window.api && window.api.saveData) {
+                window.api.saveData(appData).catch(e => console.warn('file save failed', e));
+            }
+            // Defer UI updates to not block
+            setTimeout(() => {
+                updateNavCounters();
+                updateStats();
+                updateBackupInfo();
+            }, 0);
+        }
+
+        // ------------------- العدادات والإحصائيات -------------------
+        function updateNavCounters() {
+            document.getElementById('activeCasesCount').textContent = appData.cases.filter(c=>c.status==='active').length;
+            document.getElementById('judgmentCasesCount').textContent = appData.cases.filter(c=>c.status==='judgment').length;
+            document.getElementById('decisionCasesCount').textContent = appData.cases.filter(c=>c.status==='decision').length;
+            document.getElementById('cancelledCasesCount').textContent = appData.cases.filter(c=>c.status==='cancelled').length;
+        }
+        function updateStats() {
+            let active = appData.cases.filter(c=>c.status==='active').length;
+            let judgment = appData.cases.filter(c=>c.status==='judgment').length;
+            let decision = appData.cases.filter(c=>c.status==='decision').length;
+            let cancelled = appData.cases.filter(c=>c.status==='cancelled').length;
+            let circles = appData.circles.length;
+            let today = new Date(); today.setHours(0,0,0,0);
+            let threeDays = new Date(today); threeDays.setDate(today.getDate()+3); threeDays.setHours(23,59,59,999);
+            let upcoming = appData.cases.filter(c => {
+                if (c.status !== 'active') return false;
+                let d = parseDMYDate(c.nextSessionDate);
+                return d && d >= today && d <= threeDays;
+            }).length;
+            let html = `
+                <div class="stat-card"><h3>الدعاوى المتداولة</h3><div class="stat-number">${active}</div><p>قيد النظر</p></div>
+                <div class="stat-card"><h3>محجوزة للحكم</h3><div class="stat-number">${judgment}</div><p>في انتظار الحكم</p></div>
+                <div class="stat-card"><h3>الدعاوى المشطوبة</h3><div class="stat-number">${cancelled}</div><p>تم شطبها</p></div>
+                <div class="stat-card"><h3>محجوزة للقرار</h3><div class="stat-number">${decision}</div><p>في انتظار القرار</p></div>
+                <div class="stat-card"><h3>الدوائر المسجلة</h3><div class="stat-number">${circles}</div><p>عدد الدوائر</p></div>
+                <div class="stat-card"><h3>الجلسات القادمة</h3><div class="stat-number">${upcoming}</div><p>خلال 3 أيام</p></div>
+            `;
+            document.getElementById('dashboardStats').innerHTML = html;
+        }
+        function updateCurrentDate() {
+            let now = new Date();
+            document.getElementById('currentDate').textContent = now.toLocaleDateString('ar-EG', {weekday:'long', year:'numeric', month:'long', day:'numeric'});
+        }
+        function setupDateFields() {
+            let t = new Date();
+            let d = t.getDate(), m = t.getMonth()+1, y = t.getFullYear();
+            if (document.getElementById('caseSessionDay')) document.getElementById('caseSessionDay').value = d;
+            if (document.getElementById('caseSessionMonth')) document.getElementById('caseSessionMonth').value = m;
+            if (document.getElementById('caseSessionYear')) document.getElementById('caseSessionYear').value = y;
+            if (document.getElementById('rollSessionDay')) document.getElementById('rollSessionDay').value = d;
+            if (document.getElementById('rollSessionMonth')) document.getElementById('rollSessionMonth').value = m;
+            if (document.getElementById('rollSessionYear')) document.getElementById('rollSessionYear').value = y;
+            if (document.getElementById('transferFilterDay')) document.getElementById('transferFilterDay').value = d;
+            if (document.getElementById('transferFilterMonth')) document.getElementById('transferFilterMonth').value = m;
+            if (document.getElementById('transferFilterYear')) document.getElementById('transferFilterYear').value = y;
+            if (document.getElementById('bulkTransferDay')) document.getElementById('bulkTransferDay').value = d;
+            if (document.getElementById('bulkTransferMonth')) document.getElementById('bulkTransferMonth').value = m;
+            if (document.getElementById('bulkTransferYear')) document.getElementById('bulkTransferYear').value = y;
+        }
+
+        // ------------------- دوال الدوائر -------------------
+        function updateCirclesInForms() {
+            let selects = [
+                document.getElementById('caseCircle'),
+                document.getElementById('rollCircle'),
+                document.getElementById('searchCircle'),
+                document.getElementById('transferFilterCircle'),
+                document.getElementById('prevSessionsCircle')
+            ];
+            selects.forEach(sel => {
+                if (!sel) return;
+                let cur = sel.value;
+                while (sel.options.length > 1) sel.remove(1);
+                appData.circles.forEach(c => {
+                    let opt = document.createElement('option');
+                    opt.value = c.id;
+                    opt.textContent = `${c.number} - ${c.name}`;
+                    sel.appendChild(opt);
+                });
+                if (cur) sel.value = cur;
+            });
+            updateCirclesTable();
+        }
+        function updateCirclesTable() {
+            let tbody = document.querySelector('#circlesTable tbody');
+            if (!tbody) return;
+            tbody.innerHTML = '';
+            appData.circles.forEach(circle => {
+                let caseCount = appData.cases.filter(c => c.circleId === circle.id && c.status === 'active').length;
+                let row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${circle.number}</td>
+                    <td>${circle.name}</td>
+                    <td>${circle.day || ''}</td>
+                    <td>${caseCount}</td>
+                    <td class="action-btns">
+                        <button class="action-btn edit" onclick="editCircle('${circle.id}')"><i class="fas fa-edit"></i> ✏️ تعديل</button>
+                        <button class="action-btn cancel" onclick="deleteCircle('${circle.id}')"><i class="fas fa-trash"></i> 🗑️ حذف</button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+        function addCircle() {
+            let num = document.getElementById('circleNumber').value;
+            let name = document.getElementById('circleName').value;
+            let day = document.getElementById('circleDay').value;
+            if (!num || !name || !day) { showAlert('املأ جميع الحقول','danger'); return; }
+            if (appData.circles.some(c=>c.number===num)) { showAlert('رقم الدائرة موجود','danger'); return; }
+            appData.circles.push({ id: 'circle_'+Date.now(), number: num, name, day });
+            saveData();
+            updateCirclesInForms();
+            document.getElementById('circleNumber').value = '';
+            document.getElementById('circleName').value = '';
+            document.getElementById('circleDay').value = '';
+            showAlert('تمت الإضافة','success');
+        }
+        window.editCircle = function(id) {
+            let c = appData.circles.find(c => c.id === id);
+            if (!c) return;
+            document.getElementById('circleNumber').value = c.number;
+            document.getElementById('circleName').value = c.name;
+            document.getElementById('circleDay').value = c.day;
+            let btn = document.getElementById('addCircleBtn');
+            btn.innerHTML = '<i class="fas fa-save"></i>تحديث الدائرة';
+            btn.onclick = function() { updateCircle(id); };
+            document.querySelector('[data-section="circles"]').click();
+        };
+        function updateCircle(id) {
+            let num = document.getElementById('circleNumber').value;
+            let name = document.getElementById('circleName').value;
+            let day = document.getElementById('circleDay').value;
+            if (!num || !name || !day) { showAlert('املأ جميع الحقول','danger'); return; }
+            let idx = appData.circles.findIndex(c => c.id === id);
+            if (idx !== -1) { appData.circles[idx] = { ...appData.circles[idx], number: num, name, day }; }
+            saveData();
+            updateCirclesInForms();
+            let btn = document.getElementById('addCircleBtn');
+            btn.innerHTML = '<i class="fas fa-plus"></i>إضافة دائرة';
+            btn.onclick = addCircle;
+            document.getElementById('circleNumber').value = '';
+            document.getElementById('circleName').value = '';
+            document.getElementById('circleDay').value = '';
+            showAlert('تم التحديث','success');
+        }
+        window.deleteCircle = function(id) {
+            let hasActive = appData.cases.some(c => c.circleId === id && c.status === 'active');
+            if (hasActive) { showAlert('لا يمكن حذف الدائرة لوجود دعاوى متداولة','danger'); return; }
+            showConfirmModal('حذف الدائرة', 'هل أنت متأكد؟', function() {
+                appData.circles = appData.circles.filter(c => c.id !== id);
+                saveData();
+                updateCirclesInForms();
+                showAlert('تم الحذف','success');
+            });
+        };
+
+        // ------------------- دوال الدعاوى الأساسية -------------------
+        function addCase() {
+            console.log('addCase called');
+            
+            // Ensure inputs are enabled
+            document.querySelectorAll('#add-case input, #add-case textarea, #add-case select').forEach(el => {
+                el.disabled = false;
+                el.style.pointerEvents = 'auto';
+            });
+            
+            let circleId = document.getElementById('caseCircle').value;
+            let caseNumber = document.getElementById('caseNumber').value;
+            let proceeding = document.getElementById('caseProceedingNumber').value;
+            let plaintiff = document.getElementById('casePlaintiff').value;
+            let defendant = document.getElementById('caseDefendant').value;
+            let subject = document.getElementById('caseSubject').value;
+            let d = document.getElementById('caseSessionDay').value;
+            let m = document.getElementById('caseSessionMonth').value;
+            let y = document.getElementById('caseSessionYear').value;
+            
+            console.log('Form values:', {circleId, caseNumber, proceeding, plaintiff, defendant, subject, d, m, y});
+            
+            if (!circleId || !caseNumber || !proceeding || !plaintiff || !defendant || !subject || !d || !m || !y) {
+                showAlert('املأ جميع الحقول المطلوبة','danger'); return;
+            }
+            if (!isValidDate(d,m,y)) { showAlert('تاريخ غير صحيح','danger'); return; }
+            if (appData.cases.some(c => c.caseNumber === caseNumber || c.proceedingNumber === proceeding)) {
+                document.getElementById('duplicateAlert').style.display = 'flex'; return;
+            }
+            let circle = appData.circles.find(c => c.id === circleId);
+            if (!circle) { showAlert('الدائرة غير موجودة','danger'); return; }
+            let sessionDate = `${parseInt(d)}/${parseInt(m)}/${parseInt(y)}`;
+            appData.cases.push({
+                id: 'case_'+Date.now(),
+                circleId, circleName: circle.name, caseNumber, proceedingNumber: proceeding, plaintiff, defendant, subject,
+                nextSessionDate: sessionDate, status: 'active',
+                rollNumber: '', attendance: '', stateRequests: '', courtDecision: '',
+                createdAt: new Date().toISOString(),
+                history: [{ date: new Date().toISOString(), action: 'تم إضافة الدعوى', details: `أضيفت في الدائرة ${circle.number}` }]
+            });
+            saveData();
+            // Immediate UI feedback
+            showAlert('تمت الإضافة بنجاح','success');
+            // Clear form immediately
+            document.getElementById('caseNumber').value = '';
+            document.getElementById('caseProceedingNumber').value = '';
+            document.getElementById('casePlaintiff').value = '';
+            document.getElementById('caseDefendant').value = '';
+            document.getElementById('caseSubject').value = '';
+            document.getElementById('caseSessionDay').value = '';
+            document.getElementById('caseSessionMonth').value = '';
+            document.getElementById('caseSessionYear').value = '';
+            document.getElementById('caseCircle').value = '';
+            document.getElementById('duplicateAlert').style.display = 'none';
+            // Update UI in next tick
+            setTimeout(() => {
+                showRecentCases();
+            }, 0);
+        }
+        window.editCase = function(id) {
+            let c = appData.cases.find(c => c.id === id);
+            if (!c) return;
+            document.getElementById('caseCircle').value = c.circleId;
+            document.getElementById('caseNumber').value = c.caseNumber;
+            document.getElementById('caseProceedingNumber').value = c.proceedingNumber;
+            document.getElementById('casePlaintiff').value = c.plaintiff;
+            document.getElementById('caseDefendant').value = c.defendant;
+            document.getElementById('caseSubject').value = c.subject;
+            let p = c.nextSessionDate.split('/');
+            if (p.length===3) {
+                document.getElementById('caseSessionDay').value = p[0];
+                document.getElementById('caseSessionMonth').value = p[1];
+                document.getElementById('caseSessionYear').value = p[2];
+            }
+            let btn = document.getElementById('addCaseBtn');
+            btn.innerHTML = '<i class="fas fa-save"></i>تحديث الدعوى';
+            btn.onclick = function() { updateCase(id); };
+            document.querySelector('[data-section="add-case"]').click();
+        };
+        function updateCase(id) {
+            let circleId = document.getElementById('caseCircle').value;
+            let caseNumber = document.getElementById('caseNumber').value;
+            let proceeding = document.getElementById('caseProceedingNumber').value;
+            let plaintiff = document.getElementById('casePlaintiff').value;
+            let defendant = document.getElementById('caseDefendant').value;
+            let subject = document.getElementById('caseSubject').value;
+            let d = document.getElementById('caseSessionDay').value;
+            let m = document.getElementById('caseSessionMonth').value;
+            let y = document.getElementById('caseSessionYear').value;
+            if (!circleId || !caseNumber || !proceeding || !plaintiff || !defendant || !subject || !d || !m || !y) {
+                showAlert('املأ جميع الحقول','danger'); return;
+            }
+            if (!isValidDate(d,m,y)) { showAlert('تاريخ غير صحيح','danger'); return; }
+            let circle = appData.circles.find(c => c.id === circleId);
+            if (!circle) { showAlert('الدائرة غير موجودة','danger'); return; }
+            let idx = appData.cases.findIndex(c => c.id === id);
+            if (idx === -1) return;
+            let sessionDate = `${parseInt(d)}/${parseInt(m)}/${parseInt(y)}`;
+            appData.cases[idx] = { ...appData.cases[idx], circleId, circleName: circle.name, caseNumber, proceedingNumber: proceeding, plaintiff, defendant, subject, nextSessionDate: sessionDate };
+            appData.cases[idx].history.push({ date: new Date().toISOString(), action: 'تم تعديل الدعوى', details: 'تحديث البيانات' });
+            saveData();
+            let btn = document.getElementById('addCaseBtn');
+            btn.innerHTML = '<i class="fas fa-save"></i>حفظ الدعوى';
+            btn.onclick = addCase;
+            // تفريغ
+            document.getElementById('caseNumber').value = '';
+            document.getElementById('caseProceedingNumber').value = '';
+            document.getElementById('casePlaintiff').value = '';
+            document.getElementById('caseDefendant').value = '';
+            document.getElementById('caseSubject').value = '';
+            document.getElementById('caseSessionDay').value = '';
+            document.getElementById('caseSessionMonth').value = '';
+            document.getElementById('caseSessionYear').value = '';
+            document.getElementById('caseCircle').value = '';
+            showAlert('تم التحديث','success');
+            showRecentCases();
+        }
+        window.deleteCase = function(id) {
+            showConfirmModal('حذف الدعوى', 'سيتم حذف الدعوى نهائياً، هل أنت متأكد؟', function() {
+                appData.cases = appData.cases.filter(c => c.id !== id);
+                saveData();
+                showAlert('تم الحذف','success');
+                if (document.getElementById('cases').classList.contains('active')) loadActiveCases();
+                if (document.getElementById('cancelled').classList.contains('active')) loadCancelledCases();
+                if (document.getElementById('archive').classList.contains('active')) loadArchiveCases();
+                showRecentCases();
+            });
+        };
+
+        // ------------------- عرض الدعاوى حسب الحالة -------------------
+        function loadActiveCases() {
+            let container = document.getElementById('activeCasesContainer');
+            let list = appData.cases.filter(c => c.status === 'active');
+            if (list.length === 0) { container.innerHTML = '<div class="alert alert-info">لا توجد دعاوى متداولة</div>'; return; }
+            let table = document.createElement('table');
+            let thead = document.createElement('thead');
+            thead.innerHTML = '<tr><th>رقم الدعوى</th><th>رقم المتداول</th><th>المدعي</th><th>المدعى عليه</th><th>الدائرة</th><th>تاريخ الجلسة</th><th>الملفات</th><th>الإجراءات</th></tr>';
+            table.appendChild(thead);
+            let tbody = document.createElement('tbody');
+            let fragment = document.createDocumentFragment();
+            list.forEach(c => {
+                let row = document.createElement('tr');
+                row.innerHTML = `<td>${c.caseNumber}</td><td>${c.proceedingNumber}</td><td>${c.plaintiff}</td><td>${c.defendant}</td>
+                    <td>${c.circleName}</td><td>${formatDateForTable(c.nextSessionDate)}</td>
+                    <td><button class="action-btn" style="background:#20c997;color:white;" onclick="showCaseFilesModal('${c.id}')"><i class="fas fa-upload"></i> 📁 ملفات</button></td>
+                    <td class="action-btns">
+                        <button class="action-btn view" onclick="showCaseDetails('${c.id}')"><i class="fas fa-eye"></i> 👁️</button>
+                        <button class="action-btn history" onclick="showCaseHistory('${c.id}')"><i class="fas fa-history"></i> 📋</button>
+                        <button class="action-btn edit" onclick="editCase('${c.id}')"><i class="fas fa-edit"></i> ✏️</button>
+                        <button class="action-btn transfer" onclick="showIndividualTransferModal('${c.id}')"><i class="fas fa-exchange-alt"></i> 🔄</button>
+                        <button class="action-btn judgment" onclick="transferToJudgment('${c.id}')"><i class="fas fa-balance-scale"></i> ⚖️</button>
+                        <button class="action-btn decision" onclick="transferToDecision('${c.id}')"><i class="fas fa-file-contract"></i> ✍️</button>
+                        <button class="action-btn cancel" onclick="cancelCase('${c.id}')"><i class="fas fa-ban"></i> ❌</button>
+                    </td>`;
+                fragment.appendChild(row);
+            });
+            tbody.appendChild(fragment);
+            table.appendChild(tbody);
+            let tableContainer = document.createElement('div');
+            tableContainer.className = 'table-container';
+            tableContainer.appendChild(table);
+            container.innerHTML = '';
+            container.appendChild(tableContainer);
+        }
+        function loadJudgmentCases() {
+            let container = document.getElementById('judgmentCasesContainer');
+            let list = appData.cases.filter(c => c.status === 'judgment');
+            if (list.length === 0) { container.innerHTML = '<div class="alert alert-info">لا توجد دعاوى محجوزة للحكم</div>'; return; }
+            let html = '<div class="table-container"><table><thead><tr><th>رقم الدعوى</th><th>رقم المتداول</th><th>المدعي</th><th>المدعى عليه</th><th>الدائرة</th><th>تاريخ الجلسة</th><th>الإجراءات</th></tr></thead><tbody>';
+            list.forEach(c => {
+                html += `<tr>
+                    <td>${c.caseNumber}</td><td>${c.proceedingNumber}</td><td>${c.plaintiff}</td><td>${c.defendant}</td>
+                    <td>${c.circleName}</td><td>${formatDateForTable(c.nextSessionDate)}</td>
+                    <td class="action-btns">
+                        <button class="action-btn view" onclick="showCaseDetails('${c.id}')"><i class="fas fa-eye"></i> 👁️ عرض</button>
+                        <button class="action-btn history" onclick="showCaseHistory('${c.id}')"><i class="fas fa-history"></i> 📋 سجل</button>
+                        <button class="action-btn archive" onclick="showArchiveModal('${c.id}')"><i class="fas fa-archive"></i> 📦 أرشفة</button>
+                        <button class="action-btn restore" onclick="showRestoreWithDateModal('${c.id}','judgment')"><i class="fas fa-undo"></i> ↩️ إرجاع</button>
+                        <button class="action-btn cancel" onclick="cancelCase('${c.id}')"><i class="fas fa-ban"></i> ❌ شطب</button>
+                    </td>
+                </tr>`;
+            });
+            html += '</tbody></table></div>';
+            container.innerHTML = html;
+        }
+        function loadDecisionCases() {
+            let container = document.getElementById('decisionCasesContainer');
+            let list = appData.cases.filter(c => c.status === 'decision');
+            if (list.length === 0) { container.innerHTML = '<div class="alert alert-info">لا توجد دعاوى محجوزة للقرار</div>'; return; }
+            let html = '<div class="table-container"><table><thead><tr><th>رقم الدعوى</th><th>رقم المتداول</th><th>المدعي</th><th>المدعى عليه</th><th>الدائرة</th><th>تاريخ الجلسة</th><th>الإجراءات</th></tr></thead><tbody>';
+            list.forEach(c => {
+                html += `<tr>
+                    <td>${c.caseNumber}</td><td>${c.proceedingNumber}</td><td>${c.plaintiff}</td><td>${c.defendant}</td>
+                    <td>${c.circleName}</td><td>${formatDateForTable(c.nextSessionDate)}</td>
+                    <td class="action-btns">
+                        <button class="action-btn view" onclick="showCaseDetails('${c.id}')"><i class="fas fa-eye"></i> 👁️ عرض</button>
+                        <button class="action-btn history" onclick="showCaseHistory('${c.id}')"><i class="fas fa-history"></i> 📋 سجل</button>
+                        <button class="action-btn restore" onclick="showRestoreWithDateModal('${c.id}','decision')"><i class="fas fa-undo"></i> ↩️ إرجاع</button>
+                        <button class="action-btn cancel" onclick="cancelCase('${c.id}')"><i class="fas fa-ban"></i> ❌ شطب</button>
+                    </td>
+                </tr>`;
+            });
+            html += '</tbody></table></div>';
+            container.innerHTML = html;
+        }
+        function loadCancelledCases() {
+            let container = document.getElementById('cancelledCasesContainer');
+            let list = appData.cases.filter(c => c.status === 'cancelled');
+            if (list.length === 0) { container.innerHTML = '<div class="alert alert-info">لا توجد دعاوى مشطوبة</div>'; return; }
+            let html = '<div class="table-container"><table><thead><tr><th>رقم الدعوى</th><th>رقم المتداول</th><th>المدعي</th><th>المدعى عليه</th><th>الدائرة</th><th>تاريخ الشطب</th><th>الإجراءات</th></tr></thead><tbody>';
+            list.forEach(c => {
+                let cancelRec = c.history.find(h => h.action.includes('شطب'));
+                let cancelDate = cancelRec ? formatDateForTable(cancelRec.date) : '';
+                html += `<tr>
+                    <td>${c.caseNumber}</td><td>${c.proceedingNumber}</td><td>${c.plaintiff}</td><td>${c.defendant}</td>
+                    <td>${c.circleName}</td><td>${cancelDate}</td>
+                    <td class="action-btns">
+                        <button class="action-btn view" onclick="showCaseDetails('${c.id}')"><i class="fas fa-eye"></i> 👁️ عرض</button>
+                        <button class="action-btn history" onclick="showCaseHistory('${c.id}')"><i class="fas fa-history"></i> 📋 سجل</button>
+                        <button class="action-btn restore" onclick="showRestoreWithDateModal('${c.id}','cancelled')"><i class="fas fa-undo"></i> ↩️ استعادة</button>
+                        <button class="action-btn archive" onclick="showArchiveModal('${c.id}')"><i class="fas fa-archive"></i> 🗂️ أرشفة</button>
+                        <button class="action-btn cancel" onclick="deleteCase('${c.id}')"><i class="fas fa-trash"></i> 🗑️ حذف</button>
+                    </td>
+                </tr>`;
+            });
+            html += '</tbody></table></div>';
+            container.innerHTML = html;
+        }
+        function loadArchiveCases() {
+            let container = document.getElementById('archiveContainer');
+            let list = appData.cases.filter(c => c.status === 'archived');
+            if (list.length === 0) { container.innerHTML = '<div class="alert alert-info">لا توجد دعاوى مؤرشفة</div>'; return; }
+            let html = '<div class="table-container"><table><thead><tr><th>رقم الدعوى</th><th>رقم المتداول</th><th>المدعي</th><th>المدعى عليه</th><th>الدائرة</th><th>سبب الأرشفة</th><th>منطوق الحكم</th><th>الطعن</th><th>الإجراءات</th></tr></thead><tbody>';
+            list.forEach(c => {
+                let decision = c.courtDecision ? (c.courtDecision.length>30 ? c.courtDecision.substring(0,30)+'...' : c.courtDecision) : '';
+                html += `<tr>
+                    <td>${c.caseNumber}</td><td>${c.proceedingNumber}</td><td>${c.plaintiff}</td><td>${c.defendant}</td>
+                    <td>${c.circleName}</td><td>${c.archiveReason || ''}</td><td>${decision}</td><td>${c.appealStatus || '-'}</td>
+                    <td class="action-btns">
+                        <button class="action-btn view" onclick="showCaseDetails('${c.id}')"><i class="fas fa-eye"></i> 👁️ عرض</button>
+                        <button class="action-btn history" onclick="showCaseHistory('${c.id}')"><i class="fas fa-history"></i> 📋 سجل</button>
+                        <button class="action-btn restore" onclick="showRestoreWithDateModal('${c.id}','archived')"><i class="fas fa-undo"></i> ↩️ استعادة</button>
+                        <button class="action-btn edit" onclick="editArchiveCase('${c.id}')"><i class="fas fa-edit"></i> ✏️ تعديل</button>
+                        <button class="action-btn cancel" onclick="deleteCase('${c.id}')"><i class="fas fa-trash"></i> 🗑️ حذف</button>
+                    </td>
+                </tr>`;
+            });
+            html += '</tbody></table></div>';
+            container.innerHTML = html;
+        }
+
+        // ------------------- تحديث التطبيق -------------------
+        function initUpdateUI() {
+            const updateSection = document.createElement('div');
+            updateSection.id = 'updateSection';
+            updateSection.style.cssText = 'margin:20px 0; padding:15px; background:#e9f7ef; border:1px solid #c7eed8; border-radius:8px;';
+            updateSection.innerHTML = `
+                <h3 class="section-title"><i class="fas fa-sync-alt"></i> تحديث التطبيق</h3>
+                <div id="updateStatusText">فحص التحديثات...</div>
+                <div id="updateControls" class="btn-group" style="margin-top:15px;"></div>
+                <div id="updateProgressText" style="margin-top:15px; color:#0b7a4f;"></div>
+            `;
+            document.querySelector('.footer').before(updateSection);
+
+            document.getElementById('updateControls').innerHTML = `
+                <button class="btn btn-success" id="checkUpdatesBtn"><i class="fas fa-search"></i> فحص التحديثات</button>
+                <button class="btn btn-info" id="downloadUpdateBtn" style="display:none;"><i class="fas fa-arrow-down"></i> تنزيل التحديث</button>
+                <button class="btn btn-warning" id="installUpdateBtn" style="display:none;"><i class="fas fa-upload"></i> تثبيت التحديث</button>
+            `;
+
+            document.getElementById('checkUpdatesBtn').addEventListener('click', async () => {
+                setUpdateStatus('جاري الفحص...');
+                const result = await window.api.checkForUpdates();
+                if (!result.success) {
+                    setUpdateStatus(`حدث خطأ أثناء الفحص: ${result.error}`);
+                }
+            });
+
+            document.getElementById('downloadUpdateBtn').addEventListener('click', async () => {
+                setUpdateStatus('جاري تنزيل التحديث...');
+                const result = await window.api.downloadUpdate();
+                if (!result.success) {
+                    setUpdateStatus(`فشل في التنزيل: ${result.error}`);
+                }
+            });
+
+            document.getElementById('installUpdateBtn').addEventListener('click', async () => {
+                setUpdateStatus('جاري تثبيت التحديث...');
+                const result = await window.api.installUpdate();
+                if (!result.success) {
+                    setUpdateStatus(`فشل التثبيت: ${result.error}`);
+                }
+            });
+
+            window.api.onUpdateStatus(status => {
+                const text = status === 'checking' ? 'يتم فحص التحديثات...' : status === 'not-available' ? 'لا توجد تحديثات حالياً' : `الحالة: ${status}`;
+                setUpdateStatus(text);
+            });
+            window.api.onUpdateAvailable(info => {
+                setUpdateStatus(`تحديث متاح: الإصدار ${info.version}`);
+                showDownloadButton();
+            });
+            window.api.onUpdateProgress(progress => {
+                setUpdateStatus(`التقدم: ${Math.round(progress.percent)}% - سرعة: ${progress.bytesPerSecond} بايت/ثانية`);
+            });
+            window.api.onUpdateDownloaded(() => {
+                setUpdateStatus('تم تنزيل التحديث. اضغط تثبيت لإعادة التشغيل.');
+                showInstallButton();
+            });
+            window.api.onUpdateError(error => {
+                setUpdateStatus(`حدث خطأ في التحديث: ${error}`);
+            });
+        }
+        function setUpdateStatus(msg) {
+            const el = document.getElementById('updateStatusText');
+            if (el) el.textContent = msg;
+        }
+        function showDownloadButton() {
+            document.getElementById('downloadUpdateBtn').style.display = 'inline-flex';
+        }
+        function showInstallButton() {
+            document.getElementById('installUpdateBtn').style.display = 'inline-flex';
+        }
+        function showRecentCases() {
+            let tbody = document.querySelector('#recentCasesTable tbody');
+            if (!tbody) return;
+            tbody.innerHTML = '';
+            let recent = [...appData.cases].sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt)).slice(0,5);
+            if (recent.length === 0) { tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;">لا توجد دعاوى</td></tr>'; return; }
+            recent.forEach(c => {
+                let statusMap = {active:'متداولة', judgment:'محجوزة للحكم', decision:'محجوزة للقرار', cancelled:'مشطوبة', archived:'مؤرشفة'};
+                let classMap = {active:'status-active', judgment:'status-judgment', decision:'status-decision', cancelled:'status-cancelled', archived:'status-archived'};
+                let row = document.createElement('tr');
+                row.innerHTML = `<td>${c.caseNumber}</td><td>${c.proceedingNumber}</td><td>${c.plaintiff}</td><td>${c.circleName}</td><td>${formatDateForTable(c.nextSessionDate)}</td><td><span class="status-badge ${classMap[c.status]}">${statusMap[c.status]}</span></td>`;
+                tbody.appendChild(row);
+            });
+        }
+
+        // ------------------- دوال إنشاء الرول -------------------
+        function loadCasesForRoll() {
+            let day = document.getElementById('rollSessionDay').value;
+            let month = document.getElementById('rollSessionMonth').value;
+            let year = document.getElementById('rollSessionYear').value;
+            let circleId = document.getElementById('rollCircle').value;
+            if (!day || !month || !year) { showAlert('يرجى تحديد تاريخ الجلسة','danger'); return; }
+            if (!isValidDate(day,month,year)) { showAlert('تاريخ غير صحيح','danger'); return; }
+            let sessionDate = `${parseInt(day)}/${parseInt(month)}/${parseInt(year)}`;
+            let filtered = appData.cases.filter(c => c.status === 'active' && c.nextSessionDate === sessionDate);
+            if (circleId) filtered = filtered.filter(c => c.circleId === circleId);
+            if (filtered.length === 0) { showAlert('لا توجد دعاوى في هذا التاريخ','info'); return; }
+
+            document.getElementById('rollDate').value = sessionDate;
+            let circleNameField = document.getElementById('rollCircleName');
+            if (circleId) {
+                let circle = appData.circles.find(c => c.id === circleId);
+                circleNameField.value = circle ? `${circle.number} - ${circle.name}` : 'جميع الدوائر';
+            } else {
+                circleNameField.value = 'جميع الدوائر';
+            }
+
+            let tbody = document.querySelector('#rollCasesTable tbody');
+            tbody.innerHTML = '';
+            filtered.forEach((c, index) => {
+                let row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${index + 1}</td>
+                    <td><input type="number" class="roll-number-input" data-case-id="${c.id}" value="${c.rollNumber || ''}" style="width:70px; padding:5px;"></td>
+                    <td>${c.caseNumber}</td>
+                    <td>${c.proceedingNumber}</td>
+                    <td>${c.plaintiff}</td>
+                    <td>${c.defendant}</td>
+                    <td>${c.subject.substring(0,50)}${c.subject.length>50?'...':''}</td>
+                    <td><textarea class="attendance-input" data-case-id="${c.id}" rows="2" style="width:100%; padding:5px;">${c.attendance || ''}</textarea></td>
+                    <td><textarea class="requests-input" data-case-id="${c.id}" rows="2" style="width:100%; padding:5px;">${c.stateRequests || ''}</textarea></td>
+                    <td><textarea class="decision-input" data-case-id="${c.id}" rows="2" style="width:100%; padding:5px;">${c.courtDecision || ''}</textarea></td>
+                `;
+                tbody.appendChild(row);
+            });
+
+            document.querySelectorAll('.roll-number-input').forEach(inp => {
+                inp.addEventListener('change', function() {
+                    let caseId = this.dataset.caseId;
+                    let idx = appData.cases.findIndex(c => c.id === caseId);
+                    if (idx !== -1) { appData.cases[idx].rollNumber = this.value; saveData(); }
+                });
+            });
+            document.querySelectorAll('.attendance-input').forEach(inp => {
+                inp.addEventListener('change', function() {
+                    let caseId = this.dataset.caseId;
+                    let idx = appData.cases.findIndex(c => c.id === caseId);
+                    if (idx !== -1) { appData.cases[idx].attendance = this.value; saveData(); }
+                });
+            });
+            document.querySelectorAll('.requests-input').forEach(inp => {
+                inp.addEventListener('change', function() {
+                    let caseId = this.dataset.caseId;
+                    let idx = appData.cases.findIndex(c => c.id === caseId);
+                    if (idx !== -1) { appData.cases[idx].stateRequests = this.value; saveData(); }
+                });
+            });
+            document.querySelectorAll('.decision-input').forEach(inp => {
+                inp.addEventListener('change', function() {
+                    let caseId = this.dataset.caseId;
+                    let idx = appData.cases.findIndex(c => c.id === caseId);
+                    if (idx !== -1) { appData.cases[idx].courtDecision = this.value; saveData(); }
+                });
+            });
+
+            document.getElementById('rollCasesContainer').style.display = 'block';
+        }
+        function arrangeRoll() {
+            let tbody = document.querySelector('#rollCasesTable tbody');
+            let rows = Array.from(tbody.querySelectorAll('tr'));
+            rows.sort((a,b) => {
+                let aVal = parseInt(a.querySelector('.roll-number-input')?.value) || 9999;
+                let bVal = parseInt(b.querySelector('.roll-number-input')?.value) || 9999;
+                return aVal - bVal;
+            });
+            rows.forEach((row, idx) => {
+                row.cells[0].textContent = idx + 1;
+                tbody.appendChild(row);
+            });
+            showAlert('تم ترتيب الرول تصاعدياً حسب الأرقام','success');
+        }
+        function printRoll() {
+            window.print();
+        }
+        function exportRollToWord() {
+            let table = document.getElementById('rollCasesTable');
+            if (!table || table.tBodies[0].rows.length === 0) { showAlert('لا توجد بيانات للتصدير','warning'); return; }
+            let title = document.getElementById('rollTitle').value;
+            let date = document.getElementById('rollDate').value;
+            let circle = document.getElementById('rollCircleName').value;
+
+            let headers = ['الترتيب', 'رقم الرول', 'رقم الدعوى', 'رقم المتداول', 'اسم المدعي', 'اسم المدعى عليه', 'موضوع الدعوى', 'حضور الخصوم', 'طلبات الدولة', 'قرار المحكمة'];
+            let rowsData = [];
+            let tbodyRows = table.tBodies[0].rows;
+            for (let row of tbodyRows) {
+                let cells = row.cells;
+                let rollInput = cells[1].querySelector('.roll-number-input');
+                let rollNumber = rollInput ? rollInput.value : '';
+                let attendanceTA = cells[7].querySelector('.attendance-input');
+                let attendance = attendanceTA ? attendanceTA.value : '';
+                let requestsTA = cells[8].querySelector('.requests-input');
+                let requests = requestsTA ? requestsTA.value : '';
+                let decisionTA = cells[9].querySelector('.decision-input');
+                let decision = decisionTA ? decisionTA.value : '';
+
+                let rowData = [
+                    cells[0].textContent.trim(),
+                    rollNumber,
+                    cells[2].textContent.trim(),
+                    cells[3].textContent.trim(),
+                    cells[4].textContent.trim(),
+                    cells[5].textContent.trim(),
+                    cells[6].textContent.trim(),
+                    attendance,
+                    requests,
+                    decision
+                ];
+                rowsData.push(rowData);
+            }
+
+            let tableHtml = '<table border="1" cellpadding="5" cellspacing="0" style="border-collapse: collapse; width: 100%;">';
+            tableHtml += '<thead><tr style="background: #1a5f7a; color: white;">';
+            headers.forEach(h => tableHtml += `<th style="padding: 8px; text-align: right;">${h}</th>`);
+            tableHtml += '</tr></thead><tbody>';
+            rowsData.forEach(row => {
+                tableHtml += '<tr>';
+                row.forEach(cell => tableHtml += `<td style="padding: 6px; border: 1px solid #ddd;">${cell}</td>`);
+                tableHtml += '</tr>';
+            });
+            tableHtml += '</tbody></table>';
+
+            let html = `<!DOCTYPE html>
+            <html dir="rtl">
+            <head><meta charset="UTF-8"><title>${title}</title>
+            <style>
+                body { font-family: 'Arial', sans-serif; margin: 20px; }
+                h1 { color: #1a5f7a; text-align: center; border-bottom: 2px solid #57c5b6; padding-bottom: 10px; }
+                .info { text-align: center; margin-bottom: 20px; font-size: 16px; }
+                .footer { margin-top: 30px; text-align: center; font-size: 12px; color: #666; border-top: 1px solid #aaa; padding-top: 10px; }
+                .footer-last { margin-top: 50px; text-align: center; font-size: 11px; color: #999; border-top: 2px solid #ddd; padding-top: 15px; line-height: 1.8; }
+            </style>
+            </head>
+            <body>
+                <h1>${title}</h1>
+                <div class="info"><p>تاريخ الجلسة: ${date}</p><p>الدائرة: ${circle}</p></div>
+                ${tableHtml}
+                <div class="footer">الإدارة الإلكترونية للقضايا - هيئة قضايا الدولة</div>
+                <div class="footer-last">
+                    <p><strong>الإدارة الإلكترونية للقضايا – هيئة قضايا الدولة – المستشار احمد خليفة</strong></p>
+                    <p>جميع الحقوق محفوظة للمطور 2026 ت/01146418693</p>
+                </div>
+            </body>
+            </html>`;
+
+            let blob = new Blob(['\ufeff', html], {type: 'application/msword'});
+            let a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = `رول_جلسة_${date.replace(/\//g,'-')}.doc`;
+            a.click();
+            showAlert('تم تصدير الرول إلى Word بنجاح','success');
+        }
+        function exportRollToExcel() {
+            let table = document.getElementById('rollCasesTable');
+            if (!table || table.tBodies[0].rows.length === 0) { showAlert('لا توجد بيانات للتصدير','warning'); return; }
+            let date = document.getElementById('rollDate').value;
+            let headers = ['الترتيب', 'رقم الرول', 'رقم الدعوى', 'رقم المتداول', 'اسم المدعي', 'اسم المدعى عليه', 'موضوع الدعوى', 'حضور الخصوم', 'طلبات الدولة', 'قرار المحكمة'];
+            let data = [headers];
+            let tbodyRows = table.tBodies[0].rows;
+            for (let row of tbodyRows) {
+                let cells = row.cells;
+                let rollInput = cells[1].querySelector('.roll-number-input');
+                let rollNumber = rollInput ? rollInput.value : '';
+                let attendanceTA = cells[7].querySelector('.attendance-input');
+                let attendance = attendanceTA ? attendanceTA.value : '';
+                let requestsTA = cells[8].querySelector('.requests-input');
+                let requests = requestsTA ? requestsTA.value : '';
+                let decisionTA = cells[9].querySelector('.decision-input');
+                let decision = decisionTA ? decisionTA.value : '';
+                data.push([
+                    cells[0].textContent.trim(),
+                    rollNumber,
+                    cells[2].textContent.trim(),
+                    cells[3].textContent.trim(),
+                    cells[4].textContent.trim(),
+                    cells[5].textContent.trim(),
+                    cells[6].textContent.trim(),
+                    attendance,
+                    requests,
+                    decision
+                ]);
+            }
+            // إضافة صف فارغ ثم الفوترة
+            data.push([]);
+            data.push(['الإدارة الإلكترونية للقضايا – هيئة قضايا الدولة – المستشار احمد خليفة']);
+            data.push(['جميع الحقوق محفوظة للمطور 2026 ت/01146418693']);
+            let wb = XLSX.utils.book_new();
+            let ws = XLSX.utils.aoa_to_sheet(data);
+            XLSX.utils.book_append_sheet(wb, ws, 'رول الجلسة');
+            XLSX.writeFile(wb, `رول_جلسة_${date.replace(/\//g,'-')}.xlsx`);
+            showAlert('تم تصدير الرول إلى Excel بنجاح','success');
+        }
+
+        // ------------------- تسجيل الجلسات السابقة إلكترونياً -------------------
+        function recordSessionSnapshot(caseObj, sessionDate, resultText, reasonText) {
+            if (!sessionDate) return;
+            if (!appData.sessionRolls) appData.sessionRolls = [];
+            appData.sessionRolls.push({
+                id: 'sess_' + Date.now() + '_' + Math.random().toString(36).slice(2,7),
+                circleId: caseObj.circleId,
+                circleName: caseObj.circleName,
+                date: sessionDate,
+                caseId: caseObj.id,
+                caseNumber: caseObj.caseNumber,
+                proceedingNumber: caseObj.proceedingNumber,
+                plaintiff: caseObj.plaintiff,
+                defendant: caseObj.defendant,
+                subject: caseObj.subject,
+                rollNumber: caseObj.rollNumber || '',
+                reason: reasonText || '',
+                result: resultText || '',
+                recordedAt: new Date().toISOString()
+            });
+        }
+
+        // ------------------- إعادة بناء الجلسات السابقة من سجل الدعاوى (للدعاوى المرحلة قبل تفعيل هذا الكشف) -------------------
+        function reconstructLegacySessionsForCase(caseObj, existingKeys) {
+            let out = [];
+            if (!caseObj || !caseObj.history) return out;
+            caseObj.history.forEach(h => {
+                let action = h.action || '';
+                let details = h.details || '';
+                let entry = null;
+                if (action.includes('ترحيل')) {
+                    let m = details.match(/من\s*(?:جلسة\s*)?(\d{1,2}\/\d{1,2}\/\d{4})\s*إلى\s*(\d{1,2}\/\d{1,2}\/\d{4})/);
+                    if (m) {
+                        let isBulk = action.includes('مجمع') || details.includes('مجمع');
+                        let rm = details.match(/-\s*(?:ال)?سبب:\s*(.+)$/);
+                        entry = { date: m[1], result: isBulk ? `ترحيل مجمع إلى جلسة ${m[2]}` : `ترحيل إلى جلسة ${m[2]}`, reason: rm ? rm[1].trim() : '' };
+                    }
+                } else if (action.includes('تم شطب الدعوى') && caseObj.nextSessionDate) {
+                    entry = { date: caseObj.nextSessionDate, result: details.includes('مجمع') ? 'شطب مجمع' : 'شطب الدعوى' };
+                } else if (action.includes('تم استعادة الدعوى')) {
+                    let m = details.match(/بتاريخ جلسة\s*(\d{1,2}\/\d{1,2}\/\d{4})/);
+                    if (m) entry = { date: m[1], result: 'استعادة الدعوى' };
+                } else if (action.includes('حجز الدعوى للحكم') || action.includes('حجز الدعوى للقرار')) {
+                    let mFull = details.match(/تاريخ الجلسة:\s*(\d{1,2}\/\d{1,2}\/\d{4})\s*\(من جلسة\s*(\d{1,2}\/\d{1,2}\/\d{4})\)/);
+                    if (mFull) {
+                        entry = { date: mFull[2], result: (action.includes('للحكم') ? 'حجز للحكم - جلسة الحكم ' : 'حجز للقرار - جلسة القرار ') + mFull[1] };
+                    } else {
+                        let m = details.match(/تاريخ الجلسة:\s*(\d{1,2}\/\d{1,2}\/\d{4})/);
+                        if (m) entry = { date: m[1], result: action.includes('للحكم') ? 'حجز للحكم' : 'حجز للقرار' };
+                    }
+                }
+                if (entry && entry.date) {
+                    let key = caseObj.id + '|' + entry.date + '|' + entry.result;
+                    if (!existingKeys.has(key)) {
+                        existingKeys.add(key);
+                        out.push({
+                            id: 'legacy_' + caseObj.id + '_' + out.length,
+                            circleId: caseObj.circleId,
+                            circleName: caseObj.circleName,
+                            date: entry.date,
+                            caseId: caseObj.id,
+                            caseNumber: caseObj.caseNumber,
+                            proceedingNumber: caseObj.proceedingNumber,
+                            plaintiff: caseObj.plaintiff,
+                            defendant: caseObj.defendant,
+                            subject: caseObj.subject,
+                            rollNumber: '',
+                            reason: entry.reason || '',
+                            result: entry.result,
+                            recordedAt: h.date
+                        });
+                    }
+                }
+            });
+            return out;
+        }
+        // خريطة "الجلسة السابقة لكل جلسة" لدعوى معينة، مبنية من كامل سجل الدعوى (وليس فقط الجلسة الظاهرة حالياً)
+        function buildPreviousSessionMap(caseObj) {
+            let map = {};
+            if (!caseObj || !caseObj.history) return map;
+            caseObj.history.forEach(h => {
+                let action = h.action || '';
+                let details = h.details || '';
+                if (action.includes('ترحيل')) {
+                    let m = details.match(/من\s*(?:جلسة\s*)?(\d{1,2}\/\d{1,2}\/\d{4})\s*إلى\s*(\d{1,2}\/\d{1,2}\/\d{4})/);
+                    if (m) map[m[2]] = m[1];
+                } else if (action.includes('حجز الدعوى للحكم') || action.includes('حجز الدعوى للقرار')) {
+                    let m = details.match(/تاريخ الجلسة:\s*(\d{1,2}\/\d{1,2}\/\d{4})\s*\(من جلسة\s*(\d{1,2}\/\d{1,2}\/\d{4})\)/);
+                    if (m) map[m[1]] = m[2];
+                }
+            });
+            return map;
+        }
+        function getAllPrevSessionsForCircle(circleId) {
+            let recorded = (appData.sessionRolls || []).filter(s => s.circleId === circleId);
+            let existingKeys = new Set(recorded.map(s => s.caseId + '|' + s.date + '|' + s.result));
+            let all = recorded.slice();
+            let caseById = {};
+            (appData.cases || []).forEach(c => { caseById[c.id] = c; });
+            (appData.cases || []).filter(c => c.circleId === circleId).forEach(c => {
+                all = all.concat(reconstructLegacySessionsForCase(c, existingKeys));
+            });
+            let byCase = {};
+            all.forEach(s => { (byCase[s.caseId] = byCase[s.caseId] || []).push(s); });
+            Object.keys(byCase).forEach(caseId => {
+                let map = buildPreviousSessionMap(caseById[caseId]);
+                byCase[caseId].forEach(s => { s.previousSession = map[s.date] || ''; });
+            });
+            return all;
+        }
+
+        // ------------------- دوال عرض الجلسات السابقة -------------------
+        window.prevSessionsCircleId = null;
+        function resetPrevSessionsView() {
+            let circleSel = document.getElementById('prevSessionsCircle');
+            if (circleSel) circleSel.value = '';
+            window.prevSessionsCircleId = null;
+            document.getElementById('prevSessionsModeContainer').style.display = 'none';
+            document.getElementById('prevSessionsDatePicker').style.display = 'none';
+            document.getElementById('prevSessionsDocumentWrapper').style.display = 'none';
+            document.getElementById('prevSessionsDay').value = '';
+            document.getElementById('prevSessionsMonth').value = '';
+            document.getElementById('prevSessionsYear').value = '';
+        }
+        function loadPrevSessionsCircle() {
+            let circleId = document.getElementById('prevSessionsCircle').value;
+            if (!circleId) { showAlert('يرجى اختيار الدائرة أولاً','danger'); return; }
+            window.prevSessionsCircleId = circleId;
+            document.getElementById('prevSessionsModeContainer').style.display = 'block';
+            document.getElementById('prevSessionsDatePicker').style.display = 'none';
+            document.getElementById('prevSessionsDocumentWrapper').style.display = 'none';
+        }
+        function showPrevSessionsDatePicker() {
+            document.getElementById('prevSessionsDatePicker').style.display = 'block';
+        }
+        function renderPrevSessionsDocument(sessions, circle, dateLabel) {
+            let wrapper = document.getElementById('prevSessionsDocumentWrapper');
+            let doc = document.getElementById('prevSessionsDocument');
+            if (!sessions.length) {
+                doc.innerHTML = `<div class="alert alert-info" style="margin:0;"><i class="fas fa-info-circle"></i> لا توجد جلسات سابقة مسجلة إلكترونياً ${dateLabel ? 'بتاريخ ' + dateLabel : ''} لهذه الدائرة. (يتم تسجيل الجلسات تلقائياً في هذا الكشف مع كل عملية ترحيل أو حجز أو شطب تتم من الآن فصاعداً)</div>`;
+                wrapper.style.display = 'block';
+                return;
+            }
+            let byDate = {};
+            sessions.forEach(s => { if (!byDate[s.date]) byDate[s.date] = []; byDate[s.date].push(s); });
+            let dates = Object.keys(byDate).sort((a,b) => (parseDMYDate(b) || 0) - (parseDMYDate(a) || 0));
+            let html = `<div style="text-align:center; border-bottom:2px solid var(--gold); padding-bottom:15px; margin-bottom:20px;">
+                <h2 style="color:var(--primary-blue);">كشف الجلسات السابقة</h2>
+                <p><strong>الدائرة:</strong> ${circle ? circle.number + ' - ' + circle.name : ''}</p>
+                ${dateLabel ? `<p><strong>تاريخ الجلسة:</strong> ${dateLabel}</p>` : ''}
+                <p style="color:#666;font-size:0.9rem;">كشف إلكتروني تم إنشاؤه بتاريخ ${new Date().toLocaleDateString('ar-EG')}</p>
+            </div>`;
+            dates.forEach(d => {
+                html += `<h3 style="color:var(--primary-blue); background:var(--light-gray); padding:8px 12px; border-radius:6px; margin:20px 0 10px;"><i class="fas fa-calendar-day"></i> جلسة ${d}</h3>`;
+                html += `<table style="width:100%; border-collapse:collapse; margin-bottom:10px;"><thead><tr style="background:var(--primary-blue); color:white;">
+                    <th style="padding:8px;border:1px solid #ddd;">رقم الرول</th><th style="padding:8px;border:1px solid #ddd;">رقم الدعوى</th><th style="padding:8px;border:1px solid #ddd;">رقم المتداول</th>
+                    <th style="padding:8px;border:1px solid #ddd;">المدعي</th><th style="padding:8px;border:1px solid #ddd;">المدعى عليه</th>
+                    <th style="padding:8px;border:1px solid #ddd;">الجلسة السابقة</th>
+                    <th style="padding:8px;border:1px solid #ddd;">قرار المحكمة</th><th style="padding:8px;border:1px solid #ddd;">الإجراء</th></tr></thead><tbody>`;
+                byDate[d].forEach(s => {
+                    html += `<tr>
+                        <td style="padding:6px;border:1px solid #ddd;">${s.rollNumber||''}</td>
+                        <td style="padding:6px;border:1px solid #ddd;">${s.caseNumber}</td>
+                        <td style="padding:6px;border:1px solid #ddd;">${s.proceedingNumber}</td>
+                        <td style="padding:6px;border:1px solid #ddd;">${s.plaintiff}</td>
+                        <td style="padding:6px;border:1px solid #ddd;">${s.defendant}</td>
+                        <td style="padding:6px;border:1px solid #ddd;">${s.previousSession||''}</td>
+                        <td style="padding:6px;border:1px solid #ddd;">${s.reason||''}</td>
+                        <td style="padding:6px;border:1px solid #ddd;">${s.result||''}</td>
+                    </tr>`;
+                });
+                html += `</tbody></table>`;
+            });
+            doc.innerHTML = html;
+            wrapper.style.display = 'block';
+            wrapper.scrollIntoView({ behavior: 'smooth' });
+        }
+        function showAllPrevSessions() {
+            let circleId = window.prevSessionsCircleId;
+            if (!circleId) return;
+            let circle = appData.circles.find(c => c.id === circleId);
+            let sessions = getAllPrevSessionsForCircle(circleId);
+            renderPrevSessionsDocument(sessions, circle, null);
+        }
+        function showPrevSessionsByDate() {
+            let circleId = window.prevSessionsCircleId;
+            if (!circleId) return;
+            let d = document.getElementById('prevSessionsDay').value;
+            let m = document.getElementById('prevSessionsMonth').value;
+            let y = document.getElementById('prevSessionsYear').value;
+            if (!d || !m || !y || !isValidDate(d,m,y)) { showAlert('تاريخ غير صحيح','danger'); return; }
+            let dateStr = `${parseInt(d)}/${parseInt(m)}/${parseInt(y)}`;
+            let circle = appData.circles.find(c => c.id === circleId);
+            let sessions = getAllPrevSessionsForCircle(circleId).filter(s => s.date === dateStr);
+            renderPrevSessionsDocument(sessions, circle, dateStr);
+        }
+        function backToPrevSessionsSelection() {
+            document.getElementById('prevSessionsDocumentWrapper').style.display = 'none';
+        }
+        function printPrevSessions() {
+            let doc = document.getElementById('prevSessionsDocument');
+            if (!doc || !doc.innerHTML.trim()) { showAlert('لا توجد بيانات لعرضها','warning'); return; }
+            document.body.classList.add('printing-prev-sessions');
+            window.print();
+        }
+        window.addEventListener('afterprint', function() { document.body.classList.remove('printing-prev-sessions'); });
+        function exportPrevSessionsToWord() {
+            let doc = document.getElementById('prevSessionsDocument');
+            if (!doc || !doc.innerHTML.trim() || doc.querySelector('.alert')) { showAlert('لا توجد بيانات للتصدير','warning'); return; }
+            let html = `<!DOCTYPE html><html dir="rtl"><head><meta charset="UTF-8"><title>كشف الجلسات السابقة</title><style>
+                body{font-family:Arial;margin:20px;} table{border-collapse:collapse;width:100%;margin-bottom:15px;}
+                th{background:#1a5f7a;color:#fff;padding:8px;border:1px solid #ddd;} td{border:1px solid #ddd;padding:6px;}
+            </style></head><body>${doc.innerHTML}
+                <div style="margin-top:50px;text-align:center;font-size:11px;color:#999;border-top:2px solid #ddd;padding-top:15px;line-height:1.8;">
+                    <p><strong>الإدارة الإلكترونية للقضايا – هيئة قضايا الدولة – المستشار احمد خليفة</strong></p>
+                    <p>جميع الحقوق محفوظة للمطور 2026 ت/01146418693</p>
+                </div>
+            </body></html>`;
+            let blob = new Blob(['\ufeff', html], {type:'application/msword'});
+            let a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = `كشف_الجلسات_السابقة.doc`;
+            a.click();
+            showAlert('تم التصدير','success');
+        }
+
+        // ------------------- دوال الترحيل الفردي والمجمع -------------------
+        window.showIndividualTransferModal = function(caseId) {
+            let modal = document.getElementById('transferModal');
+            let content = document.getElementById('transferModalContent');
+            let t = new Date();
+            content.innerHTML = `<div style="padding:20px;">
+                <h3 style="color:var(--primary-blue);margin-bottom:20px;">ترحيل الدعوى</h3>
+                <div class="form-group"><label>تاريخ الجلسة الجديدة</label>
+                    <div class="date-input-group">
+                        <input type="number" id="individualTransferDay" class="date-input" min="1" max="31" placeholder="يوم" value="${t.getDate()}">
+                        <span>/</span>
+                        <input type="number" id="individualTransferMonth" class="date-input" min="1" max="12" placeholder="شهر" value="${t.getMonth()+1}">
+                        <span>/</span>
+                        <input type="number" id="individualTransferYear" class="date-input" min="2024" max="2100" placeholder="سنة" value="${t.getFullYear()}">
+                    </div>
+                </div>
+                <div class="form-group"><label>سبب الترحيل (اختياري)</label><textarea id="transferReason" class="form-control" rows="3"></textarea></div>
+                <div class="btn-group">
+                    <button class="btn btn-success" onclick="individualTransferCase('${caseId}')"><i class="fas fa-exchange-alt"></i> ترحيل</button>
+                    <button class="btn btn-warning" onclick="transferToJudgment('${caseId}')"><i class="fas fa-balance-scale"></i> حكم</button>
+                    <button class="btn btn-info" onclick="transferToDecision('${caseId}')"><i class="fas fa-file-contract"></i> قرار</button>
+                    <button class="btn btn-danger" onclick="cancelCase('${caseId}')"><i class="fas fa-ban"></i> شطب</button>
+                    <button class="btn" onclick="document.getElementById('transferModal').classList.remove('active')">إلغاء</button>
+                </div>
+            </div>`;
+            modal.classList.add('active');
+        };
+        window.individualTransferCase = function(caseId) {
+            let d = document.getElementById('individualTransferDay').value;
+            let m = document.getElementById('individualTransferMonth').value;
+            let y = document.getElementById('individualTransferYear').value;
+            let reason = document.getElementById('transferReason').value;
+            if (!d || !m || !y || !isValidDate(d,m,y)) { showAlert('تاريخ غير صحيح','danger'); return; }
+            let idx = appData.cases.findIndex(c => c.id === caseId);
+            if (idx === -1) return;
+            let old = appData.cases[idx].nextSessionDate;
+            let newDate = `${parseInt(d)}/${parseInt(m)}/${parseInt(y)}`;
+            recordSessionSnapshot(appData.cases[idx], old, `ترحيل إلى جلسة ${formatDateForTable(newDate)}`, reason.trim());
+            appData.cases[idx].nextSessionDate = newDate;
+            let details = `ترحيل من جلسة ${formatDateForTable(old)} إلى ${formatDateForTable(newDate)}`;
+            if (reason.trim()) details += ` - السبب: ${reason}`;
+            appData.cases[idx].history.push({ date: new Date().toISOString(), action: 'تم ترحيل الدعوى', details });
+            saveData();
+            showAlert('تم الترحيل بنجاح','success');
+            document.getElementById('transferModal').classList.remove('active');
+            // إعادة تحميل جميع العروض المتعلقة
+            if (document.getElementById('cases').classList.contains('active')) loadActiveCases();
+            if (document.getElementById('transfer').classList.contains('active')) {
+                // إعادة تحميل الترحيل المجمع
+                loadCasesForTransfer();
+                // إزالة صف الدعوى من جدول الترحيل إن بقي ظاهراً
+                try {
+                    let cb = document.querySelector('#transferCasesTable .case-checkbox[data-case-id="' + caseId + '"]');
+                    if (cb && cb.closest('tr')) cb.closest('tr').remove();
+                } catch(e) { console.warn('cleanup transfer row failed', e); }
+            }
+            showRecentCases();
+        };
+        window.transferToJudgment = function(caseId, bulk=false) {
+            if (!bulk) {
+                // عرض نافذة التقويم لتحديد تاريخ جلسة الحكم
+                window.pendingJudgmentCaseId = caseId;
+                let t = new Date();
+                document.getElementById('judgmentSessionDay').value = t.getDate();
+                document.getElementById('judgmentSessionMonth').value = t.getMonth()+1;
+                document.getElementById('judgmentSessionYear').value = t.getFullYear();
+                document.getElementById('judgmentDateModalTitle').textContent = 'تحديد تاريخ جلسة الحكم';
+                document.getElementById('judgmentDateModal').classList.add('active');
+                document.getElementById('confirmJudgmentDateBtn').onclick = function() { confirmJudgmentTransfer('judgment'); };
+            } else {
+                let idx = appData.cases.findIndex(c => c.id === caseId);
+                if (idx === -1) return;
+                recordSessionSnapshot(appData.cases[idx], appData.cases[idx].nextSessionDate, 'حجز مجمع للحكم');
+                appData.cases[idx].status = 'judgment';
+                appData.cases[idx].history.push({ date: new Date().toISOString(), action: 'تم حجز الدعوى للحكم', details: 'حجز مجمع' });
+                saveData();
+            }
+            if (document.getElementById('cases').classList.contains('active')) loadActiveCases();
+            if (document.getElementById('transfer').classList.contains('active')) loadCasesForTransfer();
+        };
+        window.transferToDecision = function(caseId, bulk=false) {
+            if (!bulk) {
+                // عرض نافذة التقويم لتحديد تاريخ جلسة القرار
+                window.pendingDecisionCaseId = caseId;
+                let t = new Date();
+                document.getElementById('judgmentSessionDay').value = t.getDate();
+                document.getElementById('judgmentSessionMonth').value = t.getMonth()+1;
+                document.getElementById('judgmentSessionYear').value = t.getFullYear();
+                document.getElementById('judgmentDateModalTitle').textContent = 'تحديد تاريخ جلسة القرار';
+                document.getElementById('judgmentDateModal').classList.add('active');
+                document.getElementById('confirmJudgmentDateBtn').onclick = function() { confirmJudgmentTransfer('decision'); };
+            } else {
+                let idx = appData.cases.findIndex(c => c.id === caseId);
+                if (idx === -1) return;
+                recordSessionSnapshot(appData.cases[idx], appData.cases[idx].nextSessionDate, 'حجز مجمع للقرار');
+                appData.cases[idx].status = 'decision';
+                appData.cases[idx].history.push({ date: new Date().toISOString(), action: 'تم حجز الدعوى للقرار', details: 'حجز مجمع' });
+                saveData();
+            }
+            if (document.getElementById('cases').classList.contains('active')) loadActiveCases();
+            if (document.getElementById('transfer').classList.contains('active')) loadCasesForTransfer();
+        };
+        window.confirmJudgmentTransfer = function(type) {
+            let caseId = type === 'judgment' ? window.pendingJudgmentCaseId : window.pendingDecisionCaseId;
+            let d = document.getElementById('judgmentSessionDay').value;
+            let m = document.getElementById('judgmentSessionMonth').value;
+            let y = document.getElementById('judgmentSessionYear').value;
+            if (!d || !m || !y || !isValidDate(d,m,y)) { showAlert('تاريخ غير صحيح','danger'); return; }
+            
+            let idx = appData.cases.findIndex(c => c.id === caseId);
+            if (idx === -1) return;
+            
+            let newDate = `${parseInt(d)}/${parseInt(m)}/${parseInt(y)}`;
+            let oldDate = appData.cases[idx].nextSessionDate;
+            recordSessionSnapshot(appData.cases[idx], oldDate, type === 'judgment' ? `حجز للحكم - جلسة الحكم ${newDate}` : `حجز للقرار - جلسة القرار ${newDate}`);
+            appData.cases[idx].status = type;
+            appData.cases[idx].nextSessionDate = newDate;
+            let action = type === 'judgment' ? 'تم حجز الدعوى للحكم' : 'تم حجز الدعوى للقرار';
+            let details = `تاريخ الجلسة: ${newDate} (من جلسة ${formatDateForTable(oldDate)})`;
+            appData.cases[idx].history.push({ date: new Date().toISOString(), action, details });
+            
+            saveData();
+            showAlert(`تم الحجز ${type === 'judgment' ? 'للحكم' : 'للقرار'} بنجاح`,'success');
+            document.getElementById('judgmentDateModal').classList.remove('active');
+            document.getElementById('transferModal')?.classList.remove('active');
+            
+            // إعادة تحميل جميع العروض
+            if (document.getElementById('cases').classList.contains('active')) loadActiveCases();
+            if (document.getElementById('judgment').classList.contains('active')) loadJudgmentCases();
+            if (document.getElementById('decision').classList.contains('active')) loadDecisionCases();
+            if (document.getElementById('transfer').classList.contains('active')) {
+                loadCasesForTransfer();
+                try {
+                    let cb = document.querySelector('#transferCasesTable .case-checkbox[data-case-id="' + caseId + '"]');
+                    if (cb && cb.closest('tr')) cb.closest('tr').remove();
+                } catch(e) { console.warn('cleanup transfer row failed', e); }
+            }
+            showRecentCases();
+        };
+        window.cancelCase = function(caseId, bulk=false) {
+            let idx = appData.cases.findIndex(c => c.id === caseId);
+            if (idx === -1) return;
+            recordSessionSnapshot(appData.cases[idx], appData.cases[idx].nextSessionDate, bulk ? 'شطب مجمع' : 'شطب الدعوى');
+            appData.cases[idx].status = 'cancelled';
+            appData.cases[idx].history.push({ date: new Date().toISOString(), action: 'تم شطب الدعوى', details: bulk ? 'شطب مجمع' : '' });
+            saveData();
+            if (!bulk) { showAlert('تم شطب الدعوى','success'); document.getElementById('transferModal')?.classList.remove('active'); }
+            if (document.getElementById('cases').classList.contains('active')) loadActiveCases();
+            if (document.getElementById('transfer').classList.contains('active')) loadCasesForTransfer();
+        };
+        window.showRestoreWithDateModal = function(caseId, from) {
+            currentCaseForRestore = { caseId, fromStatus: from };
+            let t = new Date();
+            document.getElementById('restoreSessionDay').value = t.getDate();
+            document.getElementById('restoreSessionMonth').value = t.getMonth()+1;
+            document.getElementById('restoreSessionYear').value = t.getFullYear();
+            document.getElementById('restoreModal').classList.add('active');
+        };
+        window.confirmRestoreWithDate = function() {
+            if (!currentCaseForRestore) return;
+            let { caseId, fromStatus } = currentCaseForRestore;
+            let d = document.getElementById('restoreSessionDay').value;
+            let m = document.getElementById('restoreSessionMonth').value;
+            let y = document.getElementById('restoreSessionYear').value;
+            if (!d || !m || !y || !isValidDate(d,m,y)) { showAlert('تاريخ غير صحيح','danger'); return; }
+            let idx = appData.cases.findIndex(c => c.id === caseId);
+            if (idx === -1) return;
+            let newDate = `${parseInt(d)}/${parseInt(m)}/${parseInt(y)}`;
+            appData.cases[idx].status = 'active';
+            appData.cases[idx].nextSessionDate = newDate;
+            appData.cases[idx].history.push({ date: new Date().toISOString(), action: 'تم استعادة الدعوى', details: `استعادة من ${fromStatus} بتاريخ جلسة ${newDate}` });
+            saveData();
+            showAlert('تمت الاستعادة','success');
+            document.getElementById('restoreModal').classList.remove('active');
+            currentCaseForRestore = null;
+            if (fromStatus === 'cancelled' && document.getElementById('cancelled').classList.contains('active')) loadCancelledCases();
+            if (fromStatus === 'judgment' && document.getElementById('judgment').classList.contains('active')) loadJudgmentCases();
+            if (fromStatus === 'decision' && document.getElementById('decision').classList.contains('active')) loadDecisionCases();
+            if (fromStatus === 'archived' && document.getElementById('archive').classList.contains('active')) loadArchiveCases();
+        };
+        window.showArchiveModal = function(caseId) {
+            currentCaseForArchive = { id: caseId, mode: 'archive' };
+            document.getElementById('archiveReason').value = 'حكم صالح';
+            document.getElementById('judgmentText').value = '';
+            document.getElementById('appealStatus').value = '';
+            document.getElementById('archiveModal').classList.add('active');
+        };
+        window.editArchiveCase = function(caseId) {
+            let c = appData.cases.find(c => c.id === caseId);
+            if (!c) return;
+            currentCaseForArchive = { id: caseId, mode: 'edit' };
+            document.getElementById('archiveReason').value = c.archiveReason || 'حكم صالح';
+            document.getElementById('judgmentText').value = c.courtDecision || '';
+            document.getElementById('appealStatus').value = c.appealStatus || '';
+            document.getElementById('archiveModal').classList.add('active');
+        };
+        window.confirmArchiveWithReason = function() {
+            if (!currentCaseForArchive) return;
+            let idx = appData.cases.findIndex(c => c.id === currentCaseForArchive.id);
+            if (idx === -1) return;
+            let reason = document.getElementById('archiveReason').value;
+            let judgment = document.getElementById('judgmentText').value;
+            let appeal = document.getElementById('appealStatus').value;
+            if (currentCaseForArchive.mode === 'archive') {
+                appData.cases[idx].status = 'archived';
+                appData.cases[idx].courtDecision = judgment;
+                appData.cases[idx].archiveReason = reason;
+                appData.cases[idx].appealStatus = appeal;
+                appData.cases[idx].history.push({ date: new Date().toISOString(), action: 'تم أرشفة الدعوى', details: `السبب: ${reason}${appeal ? ' - ' + appeal : ''}` });
+                showAlert('تمت الأرشفة','success');
+            } else {
+                appData.cases[idx].courtDecision = judgment;
+                appData.cases[idx].archiveReason = reason;
+                appData.cases[idx].appealStatus = appeal;
+                appData.cases[idx].history.push({ date: new Date().toISOString(), action: 'تم تعديل بيانات الأرشفة', details: `السبب: ${reason}${appeal ? ' - ' + appeal : ''}` });
+                showAlert('تم تحديث الأرشفة','success');
+            }
+            saveData();
+            document.getElementById('archiveModal').classList.remove('active');
+            currentCaseForArchive = null;
+            if (document.getElementById('judgment').classList.contains('active')) loadJudgmentCases();
+            if (document.getElementById('archive').classList.contains('active')) loadArchiveCases();
+            if (document.getElementById('cancelled').classList.contains('active')) loadCancelledCases();
+        };
+
+        // ------------------- دوال الترحيل المجمع -------------------
+        function loadCasesForTransfer() {
+            let d = document.getElementById('transferFilterDay').value;
+            let m = document.getElementById('transferFilterMonth').value;
+            let y = document.getElementById('transferFilterYear').value;
+            let circleId = document.getElementById('transferFilterCircle').value;
+            let filtered = appData.cases.filter(c => c.status === 'active');
+            if (d && m && y && isValidDate(d,m,y)) {
+                let dateFilter = `${parseInt(d)}/${parseInt(m)}/${parseInt(y)}`;
+                filtered = filtered.filter(c => c.nextSessionDate === dateFilter);
+            }
+            if (circleId) filtered = filtered.filter(c => c.circleId === circleId);
+            if (filtered.length === 0) { showAlert('لا توجد دعاوى','info'); return; }
+            let tbody = document.querySelector('#transferCasesTable tbody');
+            if (!tbody) {
+                let div = document.getElementById('transferCasesContainer');
+                div.innerHTML = `<div class="bulk-transfer"><h4><i class="fas fa-layer-group"></i> الترحيل المجمع</h4><p>اختر الدعاوى:</p><div class="btn-group"><button class="btn" id="selectAllCasesBtn">تحديد الكل</button><button class="btn" id="deselectAllCasesBtn">إلغاء الكل</button></div></div>
+                                <div class="table-container"><table id="transferCasesTable"><thead><tr><th width="50">تحديد</th><th>رقم الدعوى</th><th>رقم المتداول</th><th>المدعي</th><th>المدعى عليه</th><th>الدائرة</th><th>تاريخ الجلسة</th><th>الإجراءات الفردية</th></tr></thead><tbody></tbody></table></div>
+                                <div class="bulk-transfer"><h4>خيارات الترحيل المجمع</h4><div class="form-container">
+                                    <div class="form-group"><label>تاريخ الجلسة الجديدة</label><div class="date-input-group"><input type="number" id="bulkTransferDay" class="date-input" min="1" max="31" placeholder="يوم"><span>/</span><input type="number" id="bulkTransferMonth" class="date-input" min="1" max="12" placeholder="شهر"><span>/</span><input type="number" id="bulkTransferYear" class="date-input" min="2024" max="2100" placeholder="سنة"></div></div>
+                                    <div class="form-group"><label>سبب الترحيل (اختياري)</label><textarea id="bulkTransferReason" class="form-control" rows="2"></textarea></div>
+                                </div><div class="btn-group">
+                                    <button class="btn btn-success" id="bulkTransferBtn"><i class="fas fa-exchange-alt"></i>ترحيل المحدد</button>
+                                    <button class="btn btn-warning" id="bulkJudgmentBtn"><i class="fas fa-balance-scale"></i>حجز للحكم</button>
+                                    <button class="btn btn-info" id="bulkDecisionBtn"><i class="fas fa-file-contract"></i>حجز للقرار</button>
+                                    <button class="btn btn-danger" id="bulkCancelBtn"><i class="fas fa-ban"></i>شطب المحدد</button>
+                                </div></div>`;
+                document.getElementById('selectAllCasesBtn').addEventListener('click', ()=> document.querySelectorAll('.case-checkbox').forEach(cb=>cb.checked=true));
+                document.getElementById('deselectAllCasesBtn').addEventListener('click', ()=> document.querySelectorAll('.case-checkbox').forEach(cb=>cb.checked=false));
+                document.getElementById('bulkTransferBtn').addEventListener('click', bulkTransferCases);
+                document.getElementById('bulkJudgmentBtn').addEventListener('click', bulkJudgmentCases);
+                document.getElementById('bulkDecisionBtn').addEventListener('click', bulkDecisionCases);
+                document.getElementById('bulkCancelBtn').addEventListener('click', bulkCancelCases);
+                tbody = document.querySelector('#transferCasesTable tbody');
+            }
+            tbody.innerHTML = '';
+            filtered.forEach(c => {
+                let row = document.createElement('tr');
+                row.innerHTML = `<td><input type="checkbox" class="case-checkbox" data-case-id="${c.id}"></td>
+                    <td>${c.caseNumber}</td><td>${c.proceedingNumber}</td><td>${c.plaintiff}</td><td>${c.defendant}</td>
+                    <td>${c.circleName}</td><td>${formatDateForTable(c.nextSessionDate)}</td>
+                    <td class="action-btns">
+                        <button class="action-btn transfer" onclick="showIndividualTransferModal('${c.id}')"><i class="fas fa-exchange-alt"></i> 🔄 ترحيل</button>
+                        <button class="action-btn judgment" onclick="transferToJudgment('${c.id}')"><i class="fas fa-balance-scale"></i> ⚖️ حكم</button>
+                        <button class="action-btn decision" onclick="transferToDecision('${c.id}')"><i class="fas fa-file-contract"></i> ✍️ قرار</button>
+                        <button class="action-btn cancel" onclick="cancelCase('${c.id}')"><i class="fas fa-ban"></i> شطب</button>
+                    </td>`;
+                tbody.appendChild(row);
+            });
+            document.getElementById('transferCasesContainer').style.display = 'block';
+        }
+        function getSelectedTransferCases() {
+            let arr = [];
+            document.querySelectorAll('.case-checkbox:checked').forEach(cb => arr.push(cb.dataset.caseId));
+            return arr;
+        }
+        function bulkTransferCases() {
+            let selected = getSelectedTransferCases();
+            if (selected.length === 0) { showAlert('لم تختر أي دعوى','danger'); return; }
+            let d = document.getElementById('bulkTransferDay').value;
+            let m = document.getElementById('bulkTransferMonth').value;
+            let y = document.getElementById('bulkTransferYear').value;
+            if (!d || !m || !y || !isValidDate(d,m,y)) { showAlert('تاريخ غير صحيح','danger'); return; }
+            let newDate = `${parseInt(d)}/${parseInt(m)}/${parseInt(y)}`;
+            let reason = document.getElementById('bulkTransferReason').value;
+            selected.forEach(id => {
+                let idx = appData.cases.findIndex(c => c.id === id);
+                if (idx !== -1) {
+                    let old = appData.cases[idx].nextSessionDate;
+                    recordSessionSnapshot(appData.cases[idx], old, `ترحيل مجمع إلى جلسة ${formatDateForTable(newDate)}`, reason.trim());
+                    appData.cases[idx].nextSessionDate = newDate;
+                    let details = `ترحيل مجمع من ${formatDateForTable(old)} إلى ${formatDateForTable(newDate)}`;
+                    if (reason.trim()) details += ` - سبب: ${reason}`;
+                    appData.cases[idx].history.push({ date: new Date().toISOString(), action: 'ترحيل مجمع', details });
+                }
+            });
+            saveData();
+            showAlert(`تم ترحيل ${selected.length} دعوى بنجاح`,'success');
+            // إعادة تحميل العروض فوراً
+            if (document.getElementById('cases').classList.contains('active')) loadActiveCases();
+            if (document.getElementById('transfer').classList.contains('active')) loadCasesForTransfer();
+            showRecentCases();
+        }
+        function bulkJudgmentCases() {
+            let selected = getSelectedTransferCases();
+            if (selected.length === 0) { showAlert('لم تختر أي دعوى','danger'); return; }
+            selected.forEach(id => transferToJudgment(id, true));
+            showAlert(`تم حجز ${selected.length} دعوى للحكم بنجاح`,'success');
+            // إعادة تحميل العروض فوراً
+            if (document.getElementById('cases').classList.contains('active')) loadActiveCases();
+            if (document.getElementById('judgment').classList.contains('active')) loadJudgmentCases();
+            if (document.getElementById('transfer').classList.contains('active')) loadCasesForTransfer();
+            showRecentCases();
+        }
+        function bulkDecisionCases() {
+            let selected = getSelectedTransferCases();
+            if (selected.length === 0) { showAlert('لم تختر أي دعوى','danger'); return; }
+            selected.forEach(id => transferToDecision(id, true));
+            showAlert(`تم حجز ${selected.length} دعوى للقرار بنجاح`,'success');
+            // إعادة تحميل العروض فوراً
+            if (document.getElementById('cases').classList.contains('active')) loadActiveCases();
+            if (document.getElementById('decision').classList.contains('active')) loadDecisionCases();
+            if (document.getElementById('transfer').classList.contains('active')) loadCasesForTransfer();
+            showRecentCases();
+        }
+        function bulkCancelCases() {
+            let selected = getSelectedTransferCases();
+            if (selected.length === 0) { showAlert('لم تختر أي دعوى','danger'); return; }
+            selected.forEach(id => cancelCase(id, true));
+            showAlert(`تم شطب ${selected.length} دعوى بنجاح`,'success');
+            // إعادة تحميل العروض فوراً
+            if (document.getElementById('cases').classList.contains('active')) loadActiveCases();
+            if (document.getElementById('cancelled').classList.contains('active')) loadCancelledCases();
+            if (document.getElementById('transfer').classList.contains('active')) loadCasesForTransfer();
+            showRecentCases();
+        }
+
+        // ------------------- دوال النسخ الاحتياطي -------------------
+        function createBackup() {
+            let backup = { appData, backupDate: new Date().toISOString(), version: '1.0' };
+            let blob = new Blob([JSON.stringify(backup, null, 2)], {type:'application/json'});
+            let url = URL.createObjectURL(blob);
+            let a = document.createElement('a');
+            a.href = url;
+            a.download = `نسخة_احتياطية_${new Date().toLocaleDateString('ar-EG').replace(/\//g,'-')}.json`;
+            a.click();
+            appData.backups.push({ date: new Date().toISOString(), fileName: a.download, casesCount: appData.cases.length, circlesCount: appData.circles.length });
+            saveData();
+            showAlert('تم إنشاء النسخة','success');
+        }
+        function handleRestoreFileSelect(e) {
+            let file = e.target.files[0];
+            if (!file) return;
+            if (!file.name.endsWith('.json')) { showAlert('الملف غير صالح','danger'); return; }
+            document.getElementById('selectedFileName').textContent = `الملف: ${file.name}`;
+            document.getElementById('restoreBackupBtn').style.display = 'block';
+            window.selectedBackupFile = file;
+        }
+        function restoreBackup() {
+            if (!window.selectedBackupFile) { showAlert('لم تختر ملفاً','danger'); return; }
+            let reader = new FileReader();
+            reader.onload = function(ev) {
+                try {
+                    let data = JSON.parse(ev.target.result);
+                    showConfirmModal('استعادة النسخة', 'سيتم استبدال البيانات الحالية، هل أنت متأكد؟', function() {
+                        appData = data.appData;
+                        saveData();
+                        updateCirclesInForms();
+                        showRecentCases();
+                        updateBackupInfo();
+                        const restoreBtn = document.getElementById('restoreBackupBtn');
+                        if (restoreBtn) restoreBtn.style.display = 'none';
+                        const selectedFileName = document.getElementById('selectedFileName');
+                        if (selectedFileName) selectedFileName.textContent = '';
+                        const restoreFileInput = document.getElementById('restoreFileInput');
+                        if (restoreFileInput) restoreFileInput.value = '';
+                        showAlert('تمت الاستعادة','success');
+                    });
+                } catch { showAlert('ملف غير صحيح','danger'); }
+            };
+            reader.readAsText(window.selectedBackupFile);
+        }
+        function updateBackupInfo() {
+            let div = document.getElementById('backupInfo');
+            if (!div) return;
+            let last = appData.backups.length ? appData.backups[appData.backups.length-1] : null;
+            div.innerHTML = `<p>عدد النسخ المخزنة: ${appData.backups.length}</p>
+                <p>عدد الدعاوى: ${appData.cases.length}</p>
+                <p>عدد الدوائر: ${appData.circles.length}</p>
+                ${last ? `<p>آخر نسخة: ${new Date(last.date).toLocaleDateString('ar-EG')} (${last.casesCount} دعوى)</p>` : ''}`;
+        }
+
+        // ------------------- دوال البحث المتقدم -------------------
+        function performSearch() {
+            // Show loading indicator
+            let container = document.getElementById('searchResultsContainer');
+            container.innerHTML = '<div class="alert alert-info">جاري البحث...</div>';
+            
+            setTimeout(() => {
+            let caseNum = document.getElementById('searchCaseNumber').value.toLowerCase();
+            let procNum = document.getElementById('searchProceedingNumber').value.toLowerCase();
+            let plaint = document.getElementById('searchPlaintiff').value.toLowerCase();
+            let defend = document.getElementById('searchDefendant').value.toLowerCase();
+            let circleId = document.getElementById('searchCircle').value;
+            let status = document.getElementById('searchStatus').value;
+
+            let sD = document.getElementById('searchSessionDay').value;
+            let sM = document.getElementById('searchSessionMonth').value;
+            let sY = document.getElementById('searchSessionYear').value;
+            let sessionFilter = null;
+            if (sD && sM && sY && isValidDate(sD,sM,sY)) sessionFilter = `${parseInt(sD)}/${parseInt(sM)}/${parseInt(sY)}`;
+
+            let jD = document.getElementById('searchJudgmentDay').value;
+            let jM = document.getElementById('searchJudgmentMonth').value;
+            let jY = document.getElementById('searchJudgmentYear').value;
+            let judgmentDateFilter = null;
+            if (jD && jM && jY && isValidDate(jD,jM,jY)) judgmentDateFilter = parseDMYToDate(jD,jM,jY);
+
+            let fD = document.getElementById('searchFromDay').value;
+            let fM = document.getElementById('searchFromMonth').value;
+            let fY = document.getElementById('searchFromYear').value;
+            let tD = document.getElementById('searchToDay').value;
+            let tM = document.getElementById('searchToMonth').value;
+            let tY = document.getElementById('searchToYear').value;
+            let fromDate = null, toDate = null;
+            if (fD && fM && fY && isValidDate(fD,fM,fY)) fromDate = parseDMYToDate(fD,fM,fY);
+            if (tD && tM && tY && isValidDate(tD,tM,tY)) {
+                toDate = parseDMYToDate(tD,tM,tY);
+                if (toDate) toDate.setHours(23,59,59,999);
+            }
+            if (fromDate && toDate && fromDate > toDate) { showAlert('تاريخ البداية بعد النهاية','danger'); return; }
+
+            let filtered = appData.cases.filter(c => {
+                if (caseNum && !c.caseNumber.toLowerCase().includes(caseNum)) return false;
+                if (procNum && !c.proceedingNumber.toLowerCase().includes(procNum)) return false;
+                if (plaint && !c.plaintiff.toLowerCase().includes(plaint)) return false;
+                if (defend && !c.defendant.toLowerCase().includes(defend)) return false;
+                if (circleId && c.circleId !== circleId) return false;
+                if (status && c.status !== status) return false;
+                if (sessionFilter && c.nextSessionDate !== sessionFilter) return false;
+                if (judgmentDateFilter) {
+                    if (!hasJudgmentArchive(c)) return false;
+                    let ad = getCaseActionDate(c, 'تم أرشفة الدعوى');
+                    if (!ad) return false;
+                    if (ad.getFullYear()!==judgmentDateFilter.getFullYear() || ad.getMonth()!==judgmentDateFilter.getMonth() || ad.getDate()!==judgmentDateFilter.getDate()) return false;
+                }
+                if (fromDate || toDate) {
+                    if (c.status === 'active' && isDateInRange(c.nextSessionDate, fromDate, toDate)) return true;
+                    if (c.status === 'cancelled') {
+                        let cd = getCaseActionDate(c, 'تم شطب الدعوى');
+                        if (cd) { if (fromDate && cd < fromDate) return false; if (toDate && cd > toDate) return false; return true; }
+                    }
+                    if (hasJudgmentArchive(c)) {
+                        let ad = getCaseActionDate(c, 'تم أرشفة الدعوى');
+                        if (ad) { if (fromDate && ad < fromDate) return false; if (toDate && ad > toDate) return false; return true; }
+                    }
+                    return false;
+                }
+                return true;
+            });
+
+            lastSearchResults = filtered;
+            let container = document.getElementById('searchResultsContainer');
+            if (filtered.length === 0) { container.innerHTML = '<div class="alert alert-info">لا توجد نتائج</div>'; return; }
+            let title = document.createElement('h3');
+            title.className = 'section-title';
+            title.textContent = `نتائج البحث (${filtered.length})`;
+            let table = document.createElement('table');
+            let thead = document.createElement('thead');
+            thead.innerHTML = '<tr><th>رقم الدعوى</th><th>رقم المتداول</th><th>المدعي</th><th>المدعى عليه</th><th>الدائرة</th><th>الحالة</th><th>تاريخ الجلسة</th><th>الإجراءات</th></tr>';
+            table.appendChild(thead);
+            let tbody = document.createElement('tbody');
+            let fragment = document.createDocumentFragment();
+            filtered.forEach(c => {
+                let statusMap = {active:'متداولة',judgment:'محجوزة للحكم',decision:'محجوزة للقرار',cancelled:'مشطوبة',archived:'مؤرشفة'};
+                let classMap = {active:'status-active',judgment:'status-judgment',decision:'status-decision',cancelled:'status-cancelled',archived:'status-archived'};
+                let row = document.createElement('tr');
+                row.innerHTML = `<td>${c.caseNumber}</td><td>${c.proceedingNumber}</td><td>${c.plaintiff}</td><td>${c.defendant}</td>
+                    <td>${c.circleName}</td><td><span class="status-badge ${classMap[c.status]}">${statusMap[c.status]}</span></td>
+                    <td>${formatDateForTable(c.nextSessionDate)}</td>
+                    <td class="action-btns">
+                        <button class="action-btn view" onclick="showCaseDetails('${c.id}')"><i class="fas fa-eye"></i> 👁️ عرض</button>
+                        <button class="action-btn history" onclick="showCaseHistory('${c.id}')"><i class="fas fa-history"></i> 📋 سجل</button>
+                        <button class="action-btn edit" onclick="editCase('${c.id}')"><i class="fas fa-edit"></i> ✏️ تعديل</button>
+                    </td>`;
+                fragment.appendChild(row);
+            });
+            tbody.appendChild(fragment);
+            table.appendChild(tbody);
+            let tableContainer = document.createElement('div');
+            tableContainer.className = 'table-container';
+            tableContainer.appendChild(table);
+            container.innerHTML = '';
+            container.appendChild(title);
+            container.appendChild(tableContainer);
+            }, 0);
+        }
+        function resetSearch() {
+            document.getElementById('searchCaseNumber').value = '';
+            document.getElementById('searchProceedingNumber').value = '';
+            document.getElementById('searchPlaintiff').value = '';
+            document.getElementById('searchDefendant').value = '';
+            document.getElementById('searchCircle').value = '';
+            document.getElementById('searchStatus').value = '';
+            document.getElementById('searchSessionDay').value = '';
+            document.getElementById('searchSessionMonth').value = '';
+            document.getElementById('searchSessionYear').value = '';
+            document.getElementById('searchJudgmentDay').value = '';
+            document.getElementById('searchJudgmentMonth').value = '';
+            document.getElementById('searchJudgmentYear').value = '';
+            document.getElementById('searchFromDay').value = '';
+            document.getElementById('searchFromMonth').value = '';
+            document.getElementById('searchFromYear').value = '';
+            document.getElementById('searchToDay').value = '';
+            document.getElementById('searchToMonth').value = '';
+            document.getElementById('searchToYear').value = '';
+            document.getElementById('searchResultsContainer').innerHTML = '';
+            lastSearchResults = [];
+        }
+        function exportSearchResultsToWord() {
+            if (!lastSearchResults || lastSearchResults.length === 0) { showAlert('لا توجد نتائج للتصدير','warning'); return; }
+            exportCasesToWord(lastSearchResults, 'نتائج البحث المتقدم');
+        }
+
+        // ------------------- دوال التصدير العامة -------------------
+        function exportCasesToWord(cases, title) {
+            if (!cases.length) { showAlert('لا توجد بيانات','warning'); return; }
+            let html = `<!DOCTYPE html><html dir="rtl"><head><meta charset="UTF-8"><title>${title}</title><style>
+                body{font-family:Arial;margin:20px;} h1{color:#1a5f7a;} table{border-collapse:collapse;width:100%;}
+                th{background:#1a5f7a;color:#fff;padding:8px;} td{border:1px solid #ddd;padding:6px;}
+                .footer-text{margin-top:50px;text-align:center;font-size:11px;color:#999;border-top:2px solid #ddd;padding-top:15px;line-height:1.8;}
+            </style></head><body>
+                <h1>${title}</h1><p>تاريخ التصدير: ${new Date().toLocaleDateString('ar-EG')}</p><p>عدد الدعاوى: ${cases.length}</p>
+                <table><thead><tr><th>رقم الدعوى</th><th>رقم المتداول</th><th>المدعي</th><th>المدعى عليه</th><th>الدائرة</th><th>تاريخ الجلسة</th><th>الحالة</th></tr></thead><tbody>`;
+            cases.forEach(c => {
+                let status = {active:'متداولة',judgment:'محجوزة للحكم',decision:'محجوزة للقرار',cancelled:'مشطوبة',archived:'مؤرشفة'}[c.status] || '';
+                html += `<tr><td>${c.caseNumber}</td><td>${c.proceedingNumber}</td><td>${c.plaintiff}</td><td>${c.defendant}</td><td>${c.circleName}</td><td>${formatDateForTable(c.nextSessionDate)}</td><td>${status}</td></tr>`;
+            });
+            html += `</tbody></table>
+                <div class="footer-text">
+                    <p><strong>الإدارة الإلكترونية للقضايا – هيئة قضايا الدولة – المستشار احمد خليفة</strong></p>
+                    <p>جميع الحقوق محفوظة للمطور 2026 ت/01146418693</p>
+                </div>
+            </body></html>`;
+            let blob = new Blob(['\ufeff', html], {type:'application/msword'});
+            let a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = `${title.replace(/\s/g,'_')}.doc`;
+            a.click();
+            showAlert('تم التصدير','success');
+        }
+        function exportAllCasesToWord() { exportCasesToWord(appData.cases, 'جميع_الدعاوى'); }
+        function exportActiveCasesToWord() { exportCasesToWord(appData.cases.filter(c=>c.status==='active'), 'الدعاوى_المتداولة'); }
+        function exportJudgmentCasesToWord() { exportCasesToWord(appData.cases.filter(c=>c.status==='judgment'), 'الدعاوى_المحجوزة_للحكم'); }
+        function exportDecisionCasesToWord() { exportCasesToWord(appData.cases.filter(c=>c.status==='decision'), 'الدعاوى_المحجوزة_للقرار'); }
+        function exportCancelledCasesToWord() { exportCasesToWord(appData.cases.filter(c=>c.status==='cancelled'), 'الدعاوى_المشطوبة'); }
+        function exportArchivedCasesToWord() {
+            let cases = appData.cases.filter(c => c.status === 'archived');
+            if (!cases.length) { showAlert('لا توجد بيانات','warning'); return; }
+            let html = `<!DOCTYPE html><html dir="rtl"><head><meta charset="UTF-8"><title>الأرشيف</title><style>
+                body{font-family:Arial;margin:20px;} h1{color:#1a5f7a;} table{border-collapse:collapse;width:100%;}
+                th{background:#1a5f7a;color:#fff;padding:8px;} td{border:1px solid #ddd;padding:6px;}
+                .footer-text{margin-top:50px;text-align:center;font-size:11px;color:#999;border-top:2px solid #ddd;padding-top:15px;line-height:1.8;}
+            </style></head><body>
+                <h1>الأرشيف</h1><p>تاريخ التصدير: ${new Date().toLocaleDateString('ar-EG')}</p><p>عدد الدعاوى: ${cases.length}</p>
+                <table><thead><tr><th>رقم الدعوى</th><th>رقم المتداول</th><th>المدعي</th><th>المدعى عليه</th><th>الدائرة</th><th>سبب الأرشفة</th><th>منطوق الحكم</th><th>الطعن</th></tr></thead><tbody>`;
+            cases.forEach(c => {
+                html += `<tr><td>${c.caseNumber}</td><td>${c.proceedingNumber}</td><td>${c.plaintiff}</td><td>${c.defendant}</td><td>${c.circleName}</td><td>${c.archiveReason||''}</td><td>${c.courtDecision||''}</td><td>${c.appealStatus||'-'}</td></tr>`;
+            });
+            html += `</tbody></table>
+                <div class="footer-text">
+                    <p><strong>الإدارة الإلكترونية للقضايا – هيئة قضايا الدولة – المستشار احمد خليفة</strong></p>
+                    <p>جميع الحقوق محفوظة للمطور 2026 ت/01146418693</p>
+                </div>
+            </body></html>`;
+            let blob = new Blob(['\ufeff', html], {type:'application/msword'});
+            let a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = `الأرشيف.doc`;
+            a.click();
+            showAlert('تم التصدير','success');
+        }
+        function exportAllCasesToExcel() {
+            if (appData.cases.length === 0) { showAlert('لا توجد بيانات','warning'); return; }
+            let data = [['جميع الدعاوى']];
+            data.push(['رقم الدعوى','رقم المتداول','المدعي','المدعى عليه','الدائرة','تاريخ الجلسة','الحالة']);
+            appData.cases.forEach(c => {
+                let status = {active:'متداولة',judgment:'محجوزة للحكم',decision:'محجوزة للقرار',cancelled:'مشطوبة',archived:'مؤرشفة'}[c.status] || '';
+                data.push([c.caseNumber, c.proceedingNumber, c.plaintiff, c.defendant, c.circleName, formatDateForTable(c.nextSessionDate), status]);
+            });
+            // إضافة صف فارغ ثم الفوترة
+            data.push([]);
+            data.push(['الإدارة الإلكترونية للقضايا – هيئة قضايا الدولة – المستشار احمد خليفة']);
+            data.push(['جميع الحقوق محفوظة للمطور 2026 ت/01146418693']);
+            let ws = XLSX.utils.aoa_to_sheet(data);
+            let wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, 'الدعاوى');
+            XLSX.writeFile(wb, `جميع_الدعاوى_${Date.now()}.xlsx`);
+            showAlert('تم التصدير','success');
+        }
+
+        // ------------------- دوال العرض التفصيلي والسجل -------------------
+        window.showCaseDetails = function(id) {
+            let c = appData.cases.find(c => c.id === id);
+            if (!c) return;
+            let statusMap = {active:'متداولة',judgment:'محجوزة للحكم',decision:'محجوزة للقرار',cancelled:'مشطوبة',archived:'مؤرشفة'};
+            let html = `<div style="padding:20px;"><table style="width:100%;border-collapse:collapse;">`;
+            html += `<tr><td style="background:#f8f9fa;"><strong>رقم الدعوى</strong></td><td>${c.caseNumber}</td></tr>`;
+            html += `<tr><td style="background:#f8f9fa;"><strong>رقم المتداول</strong></td><td>${c.proceedingNumber}</td></tr>`;
+            html += `<tr><td style="background:#f8f9fa;"><strong>المدعي</strong></td><td>${c.plaintiff}</td></tr>`;
+            html += `<tr><td style="background:#f8f9fa;"><strong>المدعى عليه</strong></td><td>${c.defendant}</td></tr>`;
+            html += `<tr><td style="background:#f8f9fa;"><strong>الدائرة</strong></td><td>${c.circleName}</td></tr>`;
+            html += `<tr><td style="background:#f8f9fa;"><strong>تاريخ الجلسة</strong></td><td>${formatDateForTable(c.nextSessionDate)}</td></tr>`;
+            html += `<tr><td style="background:#f8f9fa;"><strong>الحالة</strong></td><td>${statusMap[c.status]}</td></tr>`;
+            html += `<tr><td style="background:#f8f9fa;"><strong>موضوع الدعوى</strong></td><td>${c.subject}</td></tr>`;
+            if (c.rollNumber) html += `<tr><td style="background:#f8f9fa;"><strong>رقم الرول</strong></td><td>${c.rollNumber}</td></tr>`;
+            if (c.attendance) html += `<tr><td style="background:#f8f9fa;"><strong>حضور الخصوم</strong></td><td>${c.attendance}</td></tr>`;
+            if (c.stateRequests) html += `<tr><td style="background:#f8f9fa;"><strong>طلبات الدولة</strong></td><td>${c.stateRequests}</td></tr>`;
+            if (c.courtDecision) html += `<tr><td style="background:#f8f9fa;"><strong>قرار المحكمة</strong></td><td>${c.courtDecision}</td></tr>`;
+            if (c.appealStatus) html += `<tr><td style="background:#f8f9fa;"><strong>الطعن / عدم الطعن</strong></td><td>${c.appealStatus}</td></tr>`;
+            if (c.archiveReason) html += `<tr><td style="background:#f8f9fa;"><strong>سبب الأرشفة</strong></td><td>${c.archiveReason}</td></tr>`;
+            html += `</table><div class="btn-group" style="margin-top:20px;"><button class="btn" onclick="document.getElementById('caseDetailsModal').classList.remove('active')">إغلاق</button></div></div>`;
+            document.getElementById('caseDetailsContent').innerHTML = html;
+            document.getElementById('caseDetailsModal').classList.add('active');
+        };
+        window.showCaseHistory = function(id) {
+            let c = appData.cases.find(c => c.id === id);
+            if (!c) return;
+            let hist = c.history || [];
+            hist.sort((a,b)=>new Date(b.date)-new Date(a.date));
+            let html = `<h3 style="color:var(--primary-blue);margin-bottom:20px;">سجل الدعوى ${c.caseNumber}</h3>`;
+            if (hist.length === 0) html += '<p>لا يوجد سجل</p>';
+            else {
+                html += '<table class="history-table"><thead><tr><th>التاريخ</th><th>الإجراء</th><th>التفاصيل</th></tr></thead><tbody>';
+                hist.forEach(h => {
+                    let d = new Date(h.date);
+                    let ds = d.toLocaleDateString('ar-EG') + ' ' + d.toLocaleTimeString('ar-EG').substring(0,5);
+                    html += `<tr><td>${ds}</td><td>${h.action}</td><td>${h.details || ''}</td></tr>`;
+                });
+                html += '</tbody></table>';
+            }
+            html += `<div class="btn-group" style="margin-top:20px;"><button class="btn" onclick="document.getElementById('historyModal').classList.remove('active')">إغلاق</button></div>`;
+            document.getElementById('historyModalContent').innerHTML = html;
+            document.getElementById('historyModal').classList.add('active');
+        };
+
+        // ------------------- دوال مساعدة عامة -------------------
+        function showAlert(msg, type) {
+            let div = document.createElement('div');
+            div.className = `alert alert-${type}`;
+            div.innerHTML = `<div><i class="fas fa-${type==='success'?'check-circle':type==='danger'?'exclamation-triangle':'info-circle'}"></i> ${msg}</div><button class="close-btn">&times;</button>`;
+            document.body.prepend(div);
+            div.querySelector('.close-btn').onclick = () => div.remove();
+            setTimeout(() => div.remove(), 5000);
+        }
+        function showConfirmModal(title, msg, callback) {
+            document.getElementById('confirmModalTitle').textContent = title;
+            document.getElementById('confirmModalContent').innerHTML = `<p>${msg}</p>`;
+            document.getElementById('confirmActionBtn').onclick = function() { callback(); document.getElementById('confirmModal').classList.remove('active'); };
+            document.getElementById('confirmModal').classList.add('active');
+        }
+
+        // ------------------- دوال إدارة ملفات الدعاوى -------------------
+        window.currentCaseIdForFiles = null;
+
+        window.showCaseFilesModal = function(caseId) {
+            window.currentCaseIdForFiles = caseId;
+            let c = appData.cases.find(c => c.id === caseId);
+            if (!c) return;
+            
+            // إنشاء مجلد الدعوى تلقائياً باسم المدعي ورقم الدعوى
+            if (window.api && window.api.openCaseFiles) {
+                window.api.openCaseFiles(caseId, c).then(result => {
+                    if (result.success) {
+                        console.log('تم إنشاء مجلد الدعوى:', c.plaintiff + '_' + c.caseNumber);
+                    }
+                }).catch(e => console.error('Error creating case folder:', e));
+            }
+            
+            // تحديث عنوان المودال
+            document.querySelector('#caseFilesModal .modal-title').textContent = `إدارة ملفات الدعوى - ${c.caseNumber} (${c.plaintiff})`;
+            
+            // تحميل قائمة الملفات
+            if (window.api && window.api.listCaseFiles) {
+                window.api.listCaseFiles(caseId, c).then(result => {
+                    if (result.success) {
+                        let html = '';
+                        let docTypes = ['صحيفة_الدعوى', 'مستندات_الخصم', 'مستندات_الدولة', 'مذكرة_دفاع_الدولة', 'الحكم_الصادر'];
+                        docTypes.forEach(docType => {
+                            if (result.files[docType] && result.files[docType].length > 0) {
+                                html += `<div style="margin:15px 0; padding:10px; background:#f8f9fa; border-radius:5px;">
+                                    <h4 style="color:#1a5f7a; margin-bottom:10px;">${docType}</h4>
+                                    <ul style="list-style:none; padding:0;">`;
+                                result.files[docType].forEach(fileName => {
+                                    html += `<li style="padding:5px 0; border-bottom:1px solid #ddd; display:flex; justify-content:space-between; align-items:center;">
+                                        <span style="flex:1;">${fileName}</span>
+                                        <div>
+                                            <button class="action-btn" onclick="openCaseFile('${caseId}', '${docType}', '${fileName}')" style="background:#17a2b8;color:white;margin-left:5px;"><i class="fas fa-file"></i> فتح</button>
+                                            <button class="action-btn" onclick="deleteCaseFile('${caseId}', '${docType}', '${fileName}')" style="background:#dc3545;color:white;margin-left:5px;"><i class="fas fa-trash"></i> حذف</button>
+                                        </div>
+                                    </li>`;
+                                });
+                                html += `</ul></div>`;
+                            }
+                        });
+                        if (html === '') html = '<p style="color:#666;">لا توجد ملفات للعرض</p>';
+                        document.getElementById('caseFilesListContainer').innerHTML = html;
+                    }
+                }).catch(e => console.error('Error listing files:', e));
+            }
+            
+            document.getElementById('caseFilesModal').classList.add('active');
+        };
+
+        window.uploadCaseFile = function(documentType) {
+            if (!window.currentCaseIdForFiles) { showAlert('لم يتم تحديد الدعوى','danger'); return; }
+            if (!window.api || !window.api.uploadCaseFile) { showAlert('خدمة الملفات غير متاحة','danger'); return; }
+            
+            let c = appData.cases.find(c => c.id === window.currentCaseIdForFiles);
+            if (!c) return;
+            
+            window.api.uploadCaseFile(window.currentCaseIdForFiles, documentType, '', c).then(result => {
+                if (result.success) {
+                    showAlert(`تم تحميل الملف: ${result.fileName}`,'success');
+                    // إعادة تحميل قائمة الملفات
+                    setTimeout(() => showCaseFilesModal(window.currentCaseIdForFiles), 500);
+                } else {
+                    showAlert(`فشل التحميل: ${result.error || 'خطأ'}`,'danger');
+                }
+            }).catch(e => {
+                console.error('Error uploading file:', e);
+                showAlert('حدث خطأ في تحميل الملف','danger');
+            });
+        };
+
+        window.openCaseFile = function(caseId, documentType, fileName) {
+            if (!window.api || !window.api.openCaseFile) { showAlert('خدمة الملفات غير متاحة','danger'); return; }
+            
+            let c = appData.cases.find(c => c.id === caseId);
+            if (!c) return;
+            
+            window.api.openCaseFile(caseId, documentType, fileName, c).then(result => {
+                if (!result.success) {
+                    showAlert('فشل فتح الملف','danger');
+                }
+            }).catch(e => console.error('Error opening file:', e));
+        };
+
+        window.deleteCaseFile = function(caseId, documentType, fileName) {
+            if (!confirm(`هل أنت متأكد من حذف الملف "${fileName}"؟\n\nسيتم حذف الملف نهائياً ولن يمكن استرداده.`)) {
+                return;
+            }
+            
+            if (!window.api || !window.api.deleteCaseFile) { showAlert('خدمة الملفات غير متاحة','danger'); return; }
+            
+            let c = appData.cases.find(c => c.id === caseId);
+            if (!c) return;
+            
+            window.api.deleteCaseFile(caseId, documentType, fileName, c).then(result => {
+                if (result.success) {
+                    showAlert(`تم حذف الملف: ${fileName}`,'success');
+                    // إعادة تحميل قائمة الملفات
+                    setTimeout(() => showCaseFilesModal(caseId), 500);
+                } else {
+                    showAlert(`فشل حذف الملف: ${result.error || 'خطأ'}`,'danger');
+                }
+            }).catch(e => {
+                console.error('Error deleting file:', e);
+                showAlert('حدث خطأ في حذف الملف','danger');
+            });
+        };
+
+        window.openCaseFilesFolder = function() {
+            if (!window.currentCaseIdForFiles) { showAlert('لم يتم تحديد الدعوى','danger'); return; }
+            if (!window.api || !window.api.openCaseFiles) { showAlert('خدمة الملفات غير متاحة','danger'); return; }
+            
+            let c = appData.cases.find(c => c.id === window.currentCaseIdForFiles);
+            if (!c) return;
+            
+            window.api.openCaseFiles(window.currentCaseIdForFiles, c).then(result => {
+                if (!result.success) {
+                    showAlert('فشل فتح مجلد الملفات','danger');
+                }
+            }).catch(e => console.error('Error opening case files folder:', e));
+        };
+
+        // ------------------- ربط الأحداث والتهيئة -------------------
+        function setupEventListeners() {
+            console.log('Starting setupEventListeners...');
+            
+            // Ensure all inputs are enabled before setting up events
+            document.querySelectorAll('input, textarea, select').forEach(el => {
+                el.disabled = false;
+                el.style.pointerEvents = 'auto';
+                el.style.opacity = '1';
+                el.removeAttribute('readonly');
+                el.removeAttribute('disabled');
+            });
+            console.log('Inputs re-enabled in setupEventListeners');
+            
+            let navBtns = document.querySelectorAll('.nav-btn');
+            console.log(`Found ${navBtns.length} nav buttons`);
+            navBtns.forEach((btn, idx) => {
+                console.log(`Attaching listener to button ${idx}:`, btn.textContent);
+                btn.addEventListener('click', function(e) {
+                    console.log('Nav button clicked:', this.dataset.section);
+                    let sec = this.dataset.section;
+                    // إغلاق أي نافذة منبثقة (مودال) مفتوحة من القسم السابق حتى لا يبقى الاختيار السابق ظاهراً
+                    document.querySelectorAll('.modal.active').forEach(m => m.classList.remove('active'));
+                    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+                    document.getElementById(sec).classList.add('active');
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                    if (sec === 'cases') loadActiveCases();
+                    if (sec === 'judgment') loadJudgmentCases();
+                    if (sec === 'decision') loadDecisionCases();
+                    if (sec === 'cancelled') { loadCancelledCases(); }
+                    if (sec === 'archive') loadArchiveCases();
+                    if (sec === 'search') updateCirclesInForms();
+                    if (sec === 'transfer') updateCirclesInForms();
+                    if (sec === 'previous-sessions') { updateCirclesInForms(); resetPrevSessionsView(); }
+                    if (sec === 'files') {
+                        // Section for file management instructions; no additional refresh needed
+                    }
+                });
+            });
+
+            let addCircleBtn = document.getElementById('addCircleBtn');
+            if(addCircleBtn) {
+                console.log('Attaching listener to addCircleBtn');
+                addCircleBtn.addEventListener('click', addCircle);
+            } else {
+                console.warn('addCircleBtn not found!');
+            }
+            
+            let resetCircleFormBtn = document.getElementById('resetCircleFormBtn');
+            if(resetCircleFormBtn) {
+                resetCircleFormBtn.addEventListener('click', ()=>{
+                    document.getElementById('circleNumber').value = '';
+                    document.getElementById('circleName').value = '';
+                    document.getElementById('circleDay').value = '';
+                });
+            }
+
+            let addCaseBtn = document.getElementById('addCaseBtn');
+            if(addCaseBtn) {
+                console.log('Attaching listener to addCaseBtn');
+                addCaseBtn.addEventListener('click', function(e) {
+                    console.log('addCaseBtn clicked');
+                    // Ensure inputs are enabled before processing
+                    document.querySelectorAll('#add-case input, #add-case textarea, #add-case select').forEach(el => {
+                        el.disabled = false;
+                        el.style.pointerEvents = 'auto';
+                        el.style.opacity = '1';
+                    });
+                    addCase();
+                });
+            } else {
+                console.warn('addCaseBtn not found!');
+            }
+            
+            let resetCaseFormBtn = document.getElementById('resetCaseFormBtn');
+            if(resetCaseFormBtn) {
+                resetCaseFormBtn.addEventListener('click', ()=>{
+                    document.getElementById('caseNumber').value = '';
+                    document.getElementById('caseProceedingNumber').value = '';
+                    document.getElementById('casePlaintiff').value = '';
+                    document.getElementById('caseDefendant').value = '';
+                    document.getElementById('caseSubject').value = '';
+                    document.getElementById('caseSessionDay').value = '';
+                    document.getElementById('caseSessionMonth').value = '';
+                    document.getElementById('caseSessionYear').value = '';
+                    document.getElementById('caseCircle').value = '';
+                    document.getElementById('duplicateAlert').style.display = 'none';
+                });
+            }
+
+            // small helper to safely attach events to elements that may be missing in some builds
+            function on(id, evt, handler) {
+                const el = document.getElementById(id);
+                if (el) el.addEventListener(evt, handler);
+                else console.warn(`Element not found: ${id}`);
+            }
+
+            on('loadCasesForRollBtn', 'click', loadCasesForRoll);
+            on('arrangeRollBtn', 'click', arrangeRoll);
+            on('printRollBtn', 'click', printRoll);
+            on('exportRollWordBtn', 'click', exportRollToWord);
+            on('exportRollExcelBtn', 'click', exportRollToExcel);
+            on('exportWhatsAppBtn', 'click', ()=>showAlert('سيتم تفعيلها قريباً','info'));
+
+            on('loadCasesForTransferBtn', 'click', loadCasesForTransfer);
+
+            on('prevSessionsSelectCircleBtn', 'click', loadPrevSessionsCircle);
+            on('prevSessionsAllBtn', 'click', showAllPrevSessions);
+            on('prevSessionsPickDateBtn', 'click', showPrevSessionsDatePicker);
+            on('prevSessionsShowDateBtn', 'click', showPrevSessionsByDate);
+            on('printPrevSessionsBtn', 'click', printPrevSessions);
+            on('exportPrevSessionsWordBtn', 'click', exportPrevSessionsToWord);
+            on('backToPrevSessionsSelectionBtn', 'click', backToPrevSessionsSelection);
+
+            on('searchBtn', 'click', performSearch);
+            on('resetSearchBtn', 'click', resetSearch);
+            on('exportSearchResultsBtn', 'click', exportSearchResultsToWord);
+
+            on('createBackupBtn', 'click', createBackup);
+            on('selectRestoreFileBtn', 'click', ()=>{ const el=document.getElementById('restoreFileInput'); if(el) el.click(); });
+            on('restoreFileInput', 'change', handleRestoreFileSelect);
+            on('restoreBackupBtn', 'click', restoreBackup);
+            on('deleteAllDataBtn', 'click', deleteAllData);
+
+            function deleteAllData() {
+                showConfirmModal('حذف جميع البيانات', 'لا يمكن التراجع عن هذا الإجراء. هل أنت متأكد من حذف كل البيانات؟', function() {
+                    appData = { circles: [], cases: [], backups: [], sessionRolls: [] };
+                    saveData();
+                    updateCirclesInForms();
+                    showRecentCases();
+                    updateBackupInfo();
+                    const restoreBtn = document.getElementById('restoreBackupBtn');
+                    if (restoreBtn) restoreBtn.style.display = 'none';
+                    const selectedFileName = document.getElementById('selectedFileName');
+                    if (selectedFileName) selectedFileName.textContent = '';
+                    const restoreFileInput = document.getElementById('restoreFileInput');
+                    if (restoreFileInput) restoreFileInput.value = '';
+                    showAlert('تم حذف كل البيانات','success');
+                });
+            }
+
+            document.querySelectorAll('.close-modal').forEach(btn => btn.addEventListener('click', function(){ this.closest('.modal').classList.remove('active'); }));
+            window.addEventListener('click', e => { if (e.target.classList.contains('modal')) e.target.classList.remove('active'); });
+            document.getElementById('cancelActionBtn').addEventListener('click', ()=> document.getElementById('confirmModal').classList.remove('active'));
+            document.getElementById('cancelRestoreBtn').addEventListener('click', ()=>{ document.getElementById('restoreModal').classList.remove('active'); currentCaseForRestore=null; });
+            document.getElementById('confirmRestoreBtn').addEventListener('click', ()=> { if (currentCaseForRestore) confirmRestoreWithDate(); });
+            document.getElementById('cancelArchiveBtn').addEventListener('click', ()=>{ document.getElementById('archiveModal').classList.remove('active'); currentCaseForArchive=null; });
+            document.getElementById('confirmArchiveBtn').addEventListener('click', ()=> { if (currentCaseForArchive) confirmArchiveWithReason(); });
+            document.getElementById('cancelJudgmentDateBtn').addEventListener('click', ()=>{ document.getElementById('judgmentDateModal').classList.remove('active'); });
+        }
+
+        // ------------------- بدء التشغيل -------------------
+        document.addEventListener('DOMContentLoaded', async function() {
+            console.log('DOMContentLoaded fired!');
+            try {
+                await loadData();
+                console.log('Data loaded');
+                updateCurrentDate();
+                updateStats();
+                console.log('Before setupEventListeners');
+                setupEventListeners();
+                console.log('After setupEventListeners');
+                updateCirclesInForms();
+                showRecentCases();
+                updateBackupInfo();
+                setupDateFields();
+                initUpdateUI();
+                console.log('App initialized successfully');
+            } catch (error) {
+                console.error('Error initializing app:', error);
+                // Fallback initialization
+                updateCurrentDate();
+                setupEventListeners();
+                updateCirclesInForms();
+                showRecentCases();
+                initUpdateUI();
+            }
+
+            // Ensure all form inputs are enabled
+            document.querySelectorAll('input, textarea, select').forEach(el => {
+                el.disabled = false;
+                el.style.pointerEvents = 'auto';
+                el.style.opacity = '1';
+                el.removeAttribute('readonly');
+                el.removeAttribute('disabled');
+                // Add click handler to ensure focus works
+                el.addEventListener('click', function() {
+                    this.focus();
+                });
+            });
+
+            document.querySelectorAll('input[id$="Day"]').forEach(inp => inp.addEventListener('change', function() {
+                let v = parseInt(this.value);
+                if (isNaN(v)) this.value = '';
+                else if (v < 1) this.value = 1;
+                else if (this.max && v > this.max) this.value = this.max;
+            }));
+            document.querySelectorAll('input[id$="Month"]').forEach(inp => inp.addEventListener('change', function() {
+                let v = parseInt(this.value);
+                if (isNaN(v)) this.value = '';
+                else if (v < 1) this.value = 1;
+                else if (v > 12) this.value = 12;
+            }));
+            document.querySelectorAll('input[id$="Year"]').forEach(inp => inp.addEventListener('change', function() {
+                let v = parseInt(this.value);
+                if (isNaN(v)) this.value = '';
+                else if (v < 2024) this.value = 2024;
+                else if (v > 2100) this.value = 2100;
+            }));
+            console.log('All form inputs enabled and configured');
+        });
+    </script>
+</body>
+</html>
